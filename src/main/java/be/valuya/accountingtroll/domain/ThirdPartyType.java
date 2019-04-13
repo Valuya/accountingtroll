@@ -1,4 +1,4 @@
-package be.valuya.accountingtroll;
+package be.valuya.accountingtroll.domain;
 
 public enum ThirdPartyType {
     CLIENT,
