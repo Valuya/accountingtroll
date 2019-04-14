@@ -3,7 +3,7 @@ package be.valuya.accountingtroll.cache;
 import be.valuya.accountingtroll.domain.Account;
 import be.valuya.accountingtroll.AccountingService;
 import be.valuya.accountingtroll.domain.BookYear;
-import be.valuya.accountingtroll.Session;
+import be.valuya.accountingtroll.AccountingSession;
 import be.valuya.accountingtroll.domain.BookPeriod;
 import be.valuya.accountingtroll.domain.ThirdParty;
 
@@ -17,14 +17,14 @@ import java.util.stream.Collectors;
 
 public class MemorySessionCache implements AccountingCache {
 
-    private final Session session;
+    private final AccountingSession accountingSession;
     private Map<String, BookYear> bookYears;
     private Map<BookYear, List<BookPeriod>> bookPeriods;
     private Map<String, Account> accounts;
     private Map<String, ThirdParty> thirdParties;
 
-    public MemorySessionCache(Session session) {
-        this.session = session;
+    public MemorySessionCache(AccountingSession accountingSession) {
+        this.accountingSession = accountingSession;
     }
 
 
@@ -105,12 +105,12 @@ public class MemorySessionCache implements AccountingCache {
     }
 
     private void readPeriods(AccountingService accountingService) {
-        this.bookPeriods = accountingService.streamPeriods(session)
+        this.bookPeriods = accountingService.streamPeriods(accountingSession)
                 .collect(Collectors.groupingBy(BookPeriod::getBookYear));
     }
 
     private void readBookYears(AccountingService accountingService) {
-        this.bookYears = accountingService.streamBookYears(session)
+        this.bookYears = accountingService.streamBookYears(accountingSession)
                 .collect(Collectors.toMap(
                         BookYear::getName,
                         Function.identity()
@@ -119,7 +119,7 @@ public class MemorySessionCache implements AccountingCache {
 
 
     private void readAccounts(AccountingService accountingService) {
-        this.accounts = accountingService.streamAccounts(session)
+        this.accounts = accountingService.streamAccounts(accountingSession)
                 .collect(Collectors.toMap(
                         Account::getCode,
                         Function.identity()
@@ -128,7 +128,7 @@ public class MemorySessionCache implements AccountingCache {
 
 
     private void readThirdParties(AccountingService accountingService) {
-        this.thirdParties = accountingService.streamThirdParties(session)
+        this.thirdParties = accountingService.streamThirdParties(accountingSession)
                 .collect(Collectors.toMap(
                         ThirdParty::getId,
                         Function.identity()
