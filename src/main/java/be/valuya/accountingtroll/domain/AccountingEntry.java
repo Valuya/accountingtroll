@@ -9,8 +9,6 @@ import java.util.Optional;
 public class AccountingEntry {
 
     @NotNull
-    private Account account;
-    @NotNull
     private BookPeriod bookPeriod;
     @NotNull
     private LocalDate date;
@@ -22,6 +20,8 @@ public class AccountingEntry {
     private BigDecimal balance;
 
     @Nullable
+    private Account account;
+    @Nullable
     private ThirdParty thirdParty;
     @Nullable
     private LocalDate documentDate;
@@ -29,14 +29,6 @@ public class AccountingEntry {
     private LocalDate dueDate;
     @Nullable
     private String comment;
-
-    public Account getAccount() {
-        return account;
-    }
-
-    public void setAccount(Account account) {
-        this.account = account;
-    }
 
     public BookPeriod getBookPeriod() {
         return bookPeriod;
@@ -76,6 +68,14 @@ public class AccountingEntry {
 
     public void setBalance(BigDecimal balance) {
         this.balance = balance;
+    }
+
+    public Optional<Account> getAccountOptional() {
+        return Optional.ofNullable(account);
+    }
+
+    public void setAccount(@Nullable Account account) {
+        this.account = account;
     }
 
     public Optional<ThirdParty> getThirdPartyOptional() {

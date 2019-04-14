@@ -42,6 +42,12 @@ public class MemorySessionCache implements AccountingCache {
     }
 
     @Override
+    public List<BookPeriod> listYearPeriods(AccountingService accountingService, BookYear bookYear) {
+        List<BookPeriod> periodsNullable = getBookPeriods(accountingService).get(bookYear);
+        return Optional.ofNullable(periodsNullable).orElseGet(ArrayList::new);
+    }
+
+    @Override
     public Optional<BookYear> findBookYearByName(AccountingService accountingService, String name) {
         BookYear bookYearNullable = getBookYears(accountingService).get(name);
         return Optional.ofNullable(bookYearNullable);
@@ -62,8 +68,8 @@ public class MemorySessionCache implements AccountingCache {
     }
 
     @Override
-    public Optional<ThirdParty> findThirdPartyByNumber(AccountingService accountingService, String number) {
-        ThirdParty thirdPartyNullable = getThirdParties(accountingService).get(number);
+    public Optional<ThirdParty> findThirdPartyById(AccountingService accountingService, String id) {
+        ThirdParty thirdPartyNullable = getThirdParties(accountingService).get(id);
         return Optional.ofNullable(thirdPartyNullable);
     }
 
@@ -124,7 +130,7 @@ public class MemorySessionCache implements AccountingCache {
     private void readThirdParties(AccountingService accountingService) {
         this.thirdParties = accountingService.streamThirdParties(session)
                 .collect(Collectors.toMap(
-                        ThirdParty::getNumber,
+                        ThirdParty::getId,
                         Function.identity()
                 ));
     }

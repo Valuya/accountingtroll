@@ -7,22 +7,22 @@ import java.util.Optional;
 public class ThirdParty {
 
     @NotNull
-    private String number;
-    @NotNull
+    private String id;
+    @Nullable
     private ThirdPartyType type;
-    @NotNull
+    @Nullable
     private String fullName;
-    @NotNull
+    @Nullable
     private String address;
-    @NotNull
+    @Nullable
     private String zipCode;
-    @NotNull
+    @Nullable
     private String city;
-    @NotNull
+    @Nullable
     private String countryCode;
-    @NotNull
+    @Nullable
     private String vatCode;
-    @NotNull
+    @Nullable
     private String vatNumber;
 
     @Nullable
@@ -32,75 +32,75 @@ public class ThirdParty {
     @Nullable
     private String language;
 
-    public String getNumber() {
-        return number;
+    public String getId() {
+        return id;
     }
 
-    public void setNumber(String number) {
-        this.number = number;
+    public void setId(String id) {
+        this.id = id;
     }
 
-    public ThirdPartyType getType() {
-        return type;
+    public Optional<ThirdPartyType> getTypeOptional() {
+        return Optional.ofNullable(type);
     }
 
-    public void setType(ThirdPartyType type) {
+    public void setType(@Nullable ThirdPartyType type) {
         this.type = type;
     }
 
-    public String getFullName() {
-        return fullName;
+    public Optional<String> getFullNameOptional() {
+        return Optional.ofNullable(fullName);
     }
 
-    public void setFullName(String fullName) {
+    public void setFullName(@Nullable String fullName) {
         this.fullName = fullName;
     }
 
-    public String getAddress() {
-        return address;
+    public Optional<String> getAddressOptional() {
+        return Optional.ofNullable(address);
     }
 
-    public void setAddress(String address) {
+    public void setAddress(@Nullable String address) {
         this.address = address;
     }
 
-    public String getZipCode() {
-        return zipCode;
+    public Optional<String> getZipCodeOptional() {
+        return Optional.ofNullable(zipCode);
     }
 
-    public void setZipCode(String zipCode) {
+    public void setZipCode(@Nullable String zipCode) {
         this.zipCode = zipCode;
     }
 
-    public String getCity() {
-        return city;
+    public Optional<String> getCityOptional() {
+        return Optional.ofNullable(city);
     }
 
-    public void setCity(String city) {
+    public void setCity(@Nullable String city) {
         this.city = city;
     }
 
-    public String getCountryCode() {
-        return countryCode;
+    public Optional<String> getCountryCodeOptional() {
+        return Optional.ofNullable(countryCode);
     }
 
-    public void setCountryCode(String countryCode) {
+    public void setCountryCode(@Nullable String countryCode) {
         this.countryCode = countryCode;
     }
 
-    public String getVatCode() {
-        return vatCode;
+    public Optional<String> getVatCodeOptional() {
+        return Optional.ofNullable(vatCode);
     }
 
-    public void setVatCode(String vatCode) {
+    public void setVatCode(@Nullable String vatCode) {
         this.vatCode = vatCode;
     }
 
-    public String getVatNumber() {
-        return vatNumber;
+    public Optional<String> getVatNumberOptional() {
+        return Optional.ofNullable(vatNumber);
     }
 
-    public void setVatNumber(String vatNumber) {
+    public void setVatNumber(@Nullable String vatNumber) {
         this.vatNumber = vatNumber;
     }
 
@@ -131,9 +131,10 @@ public class ThirdParty {
     @Override
     public String toString() {
         return "ThirdParty{" +
-                "number='" + number + '\'' +
+                "id='" + id + '\'' +
                 ", type=" + type +
                 ", fullName='" + fullName + '\'' +
                 '}';
     }
+
 }

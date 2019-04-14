@@ -15,11 +15,13 @@ public interface AccountingCache {
 
     List<BookPeriod> listPeriods(AccountingService accountingService);
 
+    List<BookPeriod> listYearPeriods(AccountingService accountingService, BookYear bookYear);
+
     Optional<BookYear> findBookYearByName(AccountingService accountingService, String name);
 
     Optional<BookPeriod> findPeriodByName(AccountingService accountingService, BookYear bookYear, String name);
 
     Optional<Account> findAccountByCode(AccountingService accountingService, String code);
 
-    Optional<ThirdParty> findThirdPartyByNumber(AccountingService accountingService, String number);
+    Optional<ThirdParty> findThirdPartyById(AccountingService accountingService, String id);
 }
