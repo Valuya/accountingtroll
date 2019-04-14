@@ -4,13 +4,11 @@ import javax.annotation.Nullable;
 import javax.validation.constraints.NotNull;
 import java.util.Optional;
 
+@NotNull
 public class Account {
 
-    @NotNull
     private String name;
-    @NotNull
     private String code;
-    @Nullable
     private String currency;
 
     public String getName() {

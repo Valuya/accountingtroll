@@ -1,34 +1,23 @@
 package be.valuya.accountingtroll.domain;
 
-import javax.annotation.Nullable;
 import javax.validation.constraints.NotNull;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.Optional;
 
+@NotNull
 public class AccountingEntry {
 
-    @NotNull
     private BookPeriod bookPeriod;
-    @NotNull
     private LocalDate date;
-    @NotNull
     private BigDecimal amount;
-    @NotNull
     private BigDecimal vatRate;
-    @NotNull
     private BigDecimal balance;
-
-    @Nullable
-    private Account account;
-    @Nullable
-    private ThirdParty thirdParty;
-    @Nullable
-    private LocalDate documentDate;
-    @Nullable
-    private LocalDate dueDate;
-    @Nullable
-    private String comment;
+    private Optional<Account> accountOptional = Optional.empty();
+    private Optional<ThirdParty> thirdPartyOptional = Optional.empty();
+    private Optional<LocalDate> documentDateOptional = Optional.empty();
+    private Optional<LocalDate> dueDateOptional = Optional.empty();
+    private Optional<String> commentOptional = Optional.empty();
 
     public BookPeriod getBookPeriod() {
         return bookPeriod;
@@ -71,50 +60,50 @@ public class AccountingEntry {
     }
 
     public Optional<Account> getAccountOptional() {
-        return Optional.ofNullable(account);
+        return accountOptional;
     }
 
-    public void setAccount(@Nullable Account account) {
-        this.account = account;
+    public void setAccountOptional(Optional<Account> accountOptional) {
+        this.accountOptional = accountOptional;
     }
 
     public Optional<ThirdParty> getThirdPartyOptional() {
-        return Optional.ofNullable(thirdParty);
+        return thirdPartyOptional;
     }
 
-    public void setThirdParty(@Nullable ThirdParty thirdParty) {
-        this.thirdParty = thirdParty;
+    public void setThirdPartyOptional(Optional<ThirdParty> thirdPartyOptional) {
+        this.thirdPartyOptional = thirdPartyOptional;
     }
 
     public Optional<LocalDate> getDocumentDateOptional() {
-        return Optional.ofNullable(documentDate);
+        return documentDateOptional;
     }
 
-    public void setDocumentDate(@Nullable LocalDate documentDate) {
-        this.documentDate = documentDate;
+    public void setDocumentDateOptional(Optional<LocalDate> documentDateOptional) {
+        this.documentDateOptional = documentDateOptional;
     }
 
     public Optional<LocalDate> getDueDateOptional() {
-        return Optional.ofNullable(dueDate);
+        return dueDateOptional;
     }
 
-    public void setDueDate(@Nullable LocalDate dueDate) {
-        this.dueDate = dueDate;
+    public void setDueDateOptional(Optional<LocalDate> dueDateOptional) {
+        this.dueDateOptional = dueDateOptional;
     }
 
     public Optional<String> getCommentOptional() {
-        return Optional.ofNullable(comment);
+        return commentOptional;
     }
 
-    public void setComment(@Nullable String comment) {
-        this.comment = comment;
+    public void setCommentOptional(Optional<String> commentOptional) {
+        this.commentOptional = commentOptional;
     }
 
     @Override
     public String toString() {
         return "AccountingEntry{" +
-                "account=" + account +
-                ", thirdParty=" + thirdParty +
+                "accountOptional=" + accountOptional +
+                ", thirdPartyOptional=" + thirdPartyOptional +
                 ", bookPeriod=" + bookPeriod +
                 ", date=" + date +
                 ", amount=" + amount +

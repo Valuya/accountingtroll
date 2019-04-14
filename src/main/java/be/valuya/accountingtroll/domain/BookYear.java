@@ -4,13 +4,11 @@ import javax.validation.constraints.NotNull;
 import java.time.LocalDate;
 import java.util.Objects;
 
+@NotNull
 public class BookYear {
 
-    @NotNull
     private String name;
-    @NotNull
     private LocalDate startDate;
-    @NotNull
     private LocalDate endDate;
 
     public String getName() {
@@ -39,8 +37,12 @@ public class BookYear {
 
     @Override
     public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
         BookYear bookYear = (BookYear) o;
         return Objects.equals(name, bookYear.name) &&
                 Objects.equals(startDate, bookYear.startDate) &&
