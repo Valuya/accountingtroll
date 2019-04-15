@@ -1,4 +1,4 @@
-package be.valuya.accountingtroll;
+package be.valuya.accountingtroll.event;
 
 import be.valuya.accountingtroll.domain.Account;
 import be.valuya.accountingtroll.domain.AccountingEntry;
@@ -34,5 +34,14 @@ public class BalanceChangeEvent {
 
     public void setNewBalance(BigDecimal newBalance) {
         this.newBalance = newBalance;
+    }
+
+    @Override
+    public String toString() {
+        return "BalanceChangeEvent{" +
+                "account=" + account +
+                ", accountingEntryOptional=" + accountingEntryOptional +
+                ", newBalance=" + newBalance +
+                '}';
     }
 }
