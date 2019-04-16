@@ -9,7 +9,9 @@ public class ATAccount {
 
     private String name;
     private String code;
-    private String currency;
+    private boolean analytics;
+    private boolean yearlyBalanceReset;
+    private Optional<String> currencyOptional = Optional.empty();
 
     public String getName() {
         return name;
@@ -28,11 +30,27 @@ public class ATAccount {
     }
 
     public Optional<String> getCurrencyOptional() {
-        return Optional.ofNullable(currency);
+        return currencyOptional;
     }
 
-    public void setCurrency(@Nullable String currency) {
-        this.currency = currency;
+    public void setCurrencyOptional(Optional<String> currencyOptional) {
+        this.currencyOptional = currencyOptional;
+    }
+
+    public boolean isAnalytics() {
+        return analytics;
+    }
+
+    public void setAnalytics(boolean analytics) {
+        this.analytics = analytics;
+    }
+
+    public boolean isYearlyBalanceReset() {
+        return yearlyBalanceReset;
+    }
+
+    public void setYearlyBalanceReset(boolean yearlyBalanceReset) {
+        this.yearlyBalanceReset = yearlyBalanceReset;
     }
 
     @Override
@@ -40,7 +58,8 @@ public class ATAccount {
         return "ATAccount{" +
                 "name='" + name + '\'' +
                 ", code='" + code + '\'' +
-                ", currency='" + currency + '\'' +
+                ", analytics=" + analytics +
+                ", currencyOptional=" + currencyOptional +
                 '}';
     }
 }

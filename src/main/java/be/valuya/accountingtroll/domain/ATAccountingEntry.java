@@ -11,8 +11,8 @@ public class ATAccountingEntry {
     private ATBookPeriod bookPeriod;
     private LocalDate date;
     private BigDecimal amount;
-    private BigDecimal vatRate;
-    private BigDecimal balance;
+    private String dbkCode;
+    private Optional<ATTax> taxOptional = Optional.empty();
     private Optional<ATAccount> accountOptional = Optional.empty();
     private Optional<ATThirdParty> thirdPartyOptional = Optional.empty();
     private Optional<LocalDate> documentDateOptional = Optional.empty();
@@ -43,20 +43,12 @@ public class ATAccountingEntry {
         this.amount = amount;
     }
 
-    public BigDecimal getVatRate() {
-        return vatRate;
+    public String getDbkCode() {
+        return dbkCode;
     }
 
-    public void setVatRate(BigDecimal vatRate) {
-        this.vatRate = vatRate;
-    }
-
-    public BigDecimal getBalance() {
-        return balance;
-    }
-
-    public void setBalance(BigDecimal balance) {
-        this.balance = balance;
+    public void setDbkCode(String dbkCode) {
+        this.dbkCode = dbkCode;
     }
 
     public Optional<ATAccount> getAccountOptional() {
@@ -83,6 +75,14 @@ public class ATAccountingEntry {
         this.documentDateOptional = documentDateOptional;
     }
 
+    public Optional<ATTax> getTaxOptional() {
+        return taxOptional;
+    }
+
+    public void setTaxOptional(Optional<ATTax> taxOptional) {
+        this.taxOptional = taxOptional;
+    }
+
     public Optional<LocalDate> getDueDateOptional() {
         return dueDateOptional;
     }
@@ -98,6 +98,7 @@ public class ATAccountingEntry {
     public void setCommentOptional(Optional<String> commentOptional) {
         this.commentOptional = commentOptional;
     }
+
 
     @Override
     public String toString() {

@@ -2,6 +2,7 @@ package be.valuya.accountingtroll.domain;
 
 import javax.validation.constraints.NotNull;
 import java.time.LocalDate;
+import java.util.Objects;
 
 @NotNull
 public class ATBookPeriod {
@@ -10,6 +11,7 @@ public class ATBookPeriod {
     private LocalDate startDate;
     private LocalDate endDate;
     private ATBookYear bookYear;
+    private ATPeriodType periodType;
 
     public String getName() {
         return name;
@@ -43,6 +45,14 @@ public class ATBookPeriod {
         this.bookYear = bookYear;
     }
 
+    public ATPeriodType getPeriodType() {
+        return periodType;
+    }
+
+    public void setPeriodType(ATPeriodType periodType) {
+        this.periodType = periodType;
+    }
+
     @Override
     public String toString() {
         return "ATBookPeriod{" +
@@ -51,5 +61,22 @@ public class ATBookPeriod {
                 ", endDate=" + endDate +
                 ", bookYear=" + bookYear +
                 '}';
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        ATBookPeriod that = (ATBookPeriod) o;
+        return Objects.equals(name, that.name) &&
+                Objects.equals(startDate, that.startDate) &&
+                Objects.equals(endDate, that.endDate) &&
+                Objects.equals(bookYear, that.bookYear) &&
+                periodType == that.periodType;
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(name, startDate, endDate, bookYear, periodType);
     }
 }
