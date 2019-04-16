@@ -21,8 +21,6 @@ public class ATThirdParty {
     @Nullable
     private String countryCode;
     @Nullable
-    private String vatCode;
-    @Nullable
     private String vatNumber;
 
     @Nullable
@@ -86,14 +84,6 @@ public class ATThirdParty {
 
     public void setCountryCode(@Nullable String countryCode) {
         this.countryCode = countryCode;
-    }
-
-    public Optional<String> getVatCodeOptional() {
-        return Optional.ofNullable(vatCode);
-    }
-
-    public void setVatCode(@Nullable String vatCode) {
-        this.vatCode = vatCode;
     }
 
     public Optional<String> getVatNumberOptional() {

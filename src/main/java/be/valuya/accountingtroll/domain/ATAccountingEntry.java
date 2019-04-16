@@ -12,6 +12,12 @@ public class ATAccountingEntry {
     private LocalDate date;
     private BigDecimal amount;
     private String dbkCode;
+    private AccountingEntryDocumentType accountingEntryDocumentType;
+    private AccountingEntryType accountingEntryType;
+    private boolean matched;
+
+    private Optional<ATDocument> documentOptional = Optional.empty();
+    private Optional<ATDocument> matchedDocumentOptional = Optional.empty();
     private Optional<ATTax> taxOptional = Optional.empty();
     private Optional<ATAccount> accountOptional = Optional.empty();
     private Optional<ATThirdParty> thirdPartyOptional = Optional.empty();
@@ -99,6 +105,45 @@ public class ATAccountingEntry {
         this.commentOptional = commentOptional;
     }
 
+    public AccountingEntryDocumentType getAccountingEntryDocumentType() {
+        return accountingEntryDocumentType;
+    }
+
+    public void setAccountingEntryDocumentType(AccountingEntryDocumentType accountingEntryDocumentType) {
+        this.accountingEntryDocumentType = accountingEntryDocumentType;
+    }
+
+    public AccountingEntryType getAccountingEntryType() {
+        return accountingEntryType;
+    }
+
+    public void setAccountingEntryType(AccountingEntryType accountingEntryType) {
+        this.accountingEntryType = accountingEntryType;
+    }
+
+    public Optional<ATDocument> getDocumentOptional() {
+        return documentOptional;
+    }
+
+    public void setDocumentOptional(Optional<ATDocument> documentOptional) {
+        this.documentOptional = documentOptional;
+    }
+
+    public boolean isMatched() {
+        return matched;
+    }
+
+    public void setMatched(boolean matched) {
+        this.matched = matched;
+    }
+
+    public Optional<ATDocument> getMatchedDocumentOptional() {
+        return matchedDocumentOptional;
+    }
+
+    public void setMatchedDocumentOptional(Optional<ATDocument> matchedDocumentOptional) {
+        this.matchedDocumentOptional = matchedDocumentOptional;
+    }
 
     @Override
     public String toString() {
