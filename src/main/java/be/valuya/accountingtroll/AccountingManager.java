@@ -1,24 +1,29 @@
 package be.valuya.accountingtroll;
 
 
-import be.valuya.accountingtroll.domain.Account;
-import be.valuya.accountingtroll.domain.AccountingEntry;
-import be.valuya.accountingtroll.domain.BookPeriod;
-import be.valuya.accountingtroll.domain.BookYear;
-import be.valuya.accountingtroll.domain.ThirdParty;
+import be.valuya.accountingtroll.domain.ATAccount;
+import be.valuya.accountingtroll.domain.ATAccountingEntry;
+import be.valuya.accountingtroll.domain.ATBookPeriod;
+import be.valuya.accountingtroll.domain.ATBookYear;
+import be.valuya.accountingtroll.domain.ATThirdParty;
 
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.util.Optional;
 import java.util.stream.Stream;
 
 public interface AccountingManager {
 
-    Stream<Account> streamAccounts();
+    Optional<LocalDateTime> getLastAccountModificationTime();
 
-    Stream<BookYear> streamBookYears();
+    Stream<ATAccount> streamAccounts();
 
-    Stream<BookPeriod> streamPeriods();
+    Stream<ATBookYear> streamBookYears();
 
-    Stream<ThirdParty> streamThirdParties();
+    Stream<ATBookPeriod> streamPeriods();
 
-    Stream<AccountingEntry> streamAccountingEntries(AccountingEventListener accountingEventListener);
+    Stream<ATThirdParty> streamThirdParties();
+
+    Stream<ATAccountingEntry> streamAccountingEntries(AccountingEventListener accountingEventListener);
 
 }

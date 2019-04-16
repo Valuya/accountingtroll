@@ -5,7 +5,7 @@ import javax.validation.constraints.NotNull;
 import java.util.Optional;
 
 @NotNull
-public class Account {
+public class ATAccount {
 
     private String name;
     private String code;
@@ -37,7 +37,7 @@ public class Account {
 
     @Override
     public String toString() {
-        return "Account{" +
+        return "ATAccount{" +
                 "name='" + name + '\'' +
                 ", code='" + code + '\'' +
                 ", currency='" + currency + '\'' +

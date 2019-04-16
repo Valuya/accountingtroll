@@ -4,12 +4,12 @@ import javax.validation.constraints.NotNull;
 import java.time.LocalDate;
 
 @NotNull
-public class BookPeriod {
+public class ATBookPeriod {
 
     private String name;
     private LocalDate startDate;
     private LocalDate endDate;
-    private BookYear bookYear;
+    private ATBookYear bookYear;
 
     public String getName() {
         return name;
@@ -35,17 +35,17 @@ public class BookPeriod {
         this.endDate = endDate;
     }
 
-    public BookYear getBookYear() {
+    public ATBookYear getBookYear() {
         return bookYear;
     }
 
-    public void setBookYear(BookYear bookYear) {
+    public void setBookYear(ATBookYear bookYear) {
         this.bookYear = bookYear;
     }
 
     @Override
     public String toString() {
-        return "BookPeriod{" +
+        return "ATBookPeriod{" +
                 "name='" + name + '\'' +
                 ", startDate=" + startDate +
                 ", endDate=" + endDate +

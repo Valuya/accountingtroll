@@ -4,12 +4,12 @@ import javax.annotation.Nullable;
 import javax.validation.constraints.NotNull;
 import java.util.Optional;
 
-public class ThirdParty {
+public class ATThirdParty {
 
     @NotNull
     private String id;
     @Nullable
-    private ThirdPartyType type;
+    private ATThirdPartyType type;
     @Nullable
     private String fullName;
     @Nullable
@@ -40,11 +40,11 @@ public class ThirdParty {
         this.id = id;
     }
 
-    public Optional<ThirdPartyType> getTypeOptional() {
+    public Optional<ATThirdPartyType> getTypeOptional() {
         return Optional.ofNullable(type);
     }
 
-    public void setType(@Nullable ThirdPartyType type) {
+    public void setType(@Nullable ATThirdPartyType type) {
         this.type = type;
     }
 
@@ -130,7 +130,7 @@ public class ThirdParty {
 
     @Override
     public String toString() {
-        return "ThirdParty{" +
+        return "ATThirdParty{" +
                 "id='" + id + '\'' +
                 ", type=" + type +
                 ", fullName='" + fullName + '\'' +

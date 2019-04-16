@@ -5,7 +5,7 @@ import java.time.LocalDate;
 import java.util.Objects;
 
 @NotNull
-public class BookYear {
+public class ATBookYear {
 
     private String name;
     private LocalDate startDate;
@@ -43,7 +43,7 @@ public class BookYear {
         if (o == null || getClass() != o.getClass()) {
             return false;
         }
-        BookYear bookYear = (BookYear) o;
+        ATBookYear bookYear = (ATBookYear) o;
         return Objects.equals(name, bookYear.name) &&
                 Objects.equals(startDate, bookYear.startDate) &&
                 Objects.equals(endDate, bookYear.endDate);
@@ -56,7 +56,7 @@ public class BookYear {
 
     @Override
     public String toString() {
-        return "BookYear{" +
+        return "ATBookYear{" +
                 "name='" + name + '\'' +
                 ", startDate=" + startDate +
                 ", endDate=" + endDate +

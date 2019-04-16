@@ -1,30 +1,30 @@
 package be.valuya.accountingtroll.event;
 
-import be.valuya.accountingtroll.domain.Account;
-import be.valuya.accountingtroll.domain.AccountingEntry;
+import be.valuya.accountingtroll.domain.ATAccount;
+import be.valuya.accountingtroll.domain.ATAccountingEntry;
 
 import java.math.BigDecimal;
 import java.util.Optional;
 
 public class BalanceChangeEvent {
 
-    private Account account;
-    private Optional<AccountingEntry> accountingEntryOptional = Optional.empty(); //
+    private ATAccount account;
+    private Optional<ATAccountingEntry> accountingEntryOptional = Optional.empty(); //
     private BigDecimal newBalance;
 
-    public Account getAccount() {
+    public ATAccount getAccount() {
         return account;
     }
 
-    public void setAccount(Account account) {
+    public void setAccount(ATAccount account) {
         this.account = account;
     }
 
-    public Optional<AccountingEntry> getAccountingEntryOptional() {
+    public Optional<ATAccountingEntry> getAccountingEntryOptional() {
         return accountingEntryOptional;
     }
 
-    public void setAccountingEntryOptional(Optional<AccountingEntry> accountingEntryOptional) {
+    public void setAccountingEntryOptional(Optional<ATAccountingEntry> accountingEntryOptional) {
         this.accountingEntryOptional = accountingEntryOptional;
     }
 

@@ -6,24 +6,24 @@ import java.time.LocalDate;
 import java.util.Optional;
 
 @NotNull
-public class AccountingEntry {
+public class ATAccountingEntry {
 
-    private BookPeriod bookPeriod;
+    private ATBookPeriod bookPeriod;
     private LocalDate date;
     private BigDecimal amount;
     private BigDecimal vatRate;
     private BigDecimal balance;
-    private Optional<Account> accountOptional = Optional.empty();
-    private Optional<ThirdParty> thirdPartyOptional = Optional.empty();
+    private Optional<ATAccount> accountOptional = Optional.empty();
+    private Optional<ATThirdParty> thirdPartyOptional = Optional.empty();
     private Optional<LocalDate> documentDateOptional = Optional.empty();
     private Optional<LocalDate> dueDateOptional = Optional.empty();
     private Optional<String> commentOptional = Optional.empty();
 
-    public BookPeriod getBookPeriod() {
+    public ATBookPeriod getBookPeriod() {
         return bookPeriod;
     }
 
-    public void setBookPeriod(BookPeriod bookPeriod) {
+    public void setBookPeriod(ATBookPeriod bookPeriod) {
         this.bookPeriod = bookPeriod;
     }
 
@@ -59,19 +59,19 @@ public class AccountingEntry {
         this.balance = balance;
     }
 
-    public Optional<Account> getAccountOptional() {
+    public Optional<ATAccount> getAccountOptional() {
         return accountOptional;
     }
 
-    public void setAccountOptional(Optional<Account> accountOptional) {
+    public void setAccountOptional(Optional<ATAccount> accountOptional) {
         this.accountOptional = accountOptional;
     }
 
-    public Optional<ThirdParty> getThirdPartyOptional() {
+    public Optional<ATThirdParty> getThirdPartyOptional() {
         return thirdPartyOptional;
     }
 
-    public void setThirdPartyOptional(Optional<ThirdParty> thirdPartyOptional) {
+    public void setThirdPartyOptional(Optional<ATThirdParty> thirdPartyOptional) {
         this.thirdPartyOptional = thirdPartyOptional;
     }
 
@@ -101,7 +101,7 @@ public class AccountingEntry {
 
     @Override
     public String toString() {
-        return "AccountingEntry{" +
+        return "ATAccountingEntry{" +
                 "accountOptional=" + accountOptional +
                 ", thirdPartyOptional=" + thirdPartyOptional +
                 ", bookPeriod=" + bookPeriod +
