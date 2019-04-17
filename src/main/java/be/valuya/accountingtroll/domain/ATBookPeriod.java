@@ -59,7 +59,7 @@ public class ATBookPeriod {
                 "name='" + name + '\'' +
                 ", startDate=" + startDate +
                 ", endDate=" + endDate +
-                ", bookYear=" + bookYear +
+                ", periodType=" + periodType +
                 '}';
     }
 

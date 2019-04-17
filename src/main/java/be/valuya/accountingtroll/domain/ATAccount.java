@@ -1,7 +1,7 @@
 package be.valuya.accountingtroll.domain;
 
-import javax.annotation.Nullable;
 import javax.validation.constraints.NotNull;
+import java.util.Objects;
 import java.util.Optional;
 
 @NotNull
@@ -59,7 +59,25 @@ public class ATAccount {
                 "name='" + name + '\'' +
                 ", code='" + code + '\'' +
                 ", analytics=" + analytics +
+                ", yearlyBalanceReset=" + yearlyBalanceReset +
                 ", currencyOptional=" + currencyOptional +
                 '}';
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        ATAccount atAccount = (ATAccount) o;
+        return analytics == atAccount.analytics &&
+                yearlyBalanceReset == atAccount.yearlyBalanceReset &&
+                Objects.equals(name, atAccount.name) &&
+                Objects.equals(code, atAccount.code) &&
+                Objects.equals(currencyOptional, atAccount.currencyOptional);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(name, code, analytics, yearlyBalanceReset, currencyOptional);
     }
 }
