@@ -1,9 +1,15 @@
 package be.valuya.accountingtroll;
 
 import be.valuya.accountingtroll.domain.ATAccount;
+import be.valuya.accountingtroll.domain.ATAccountingEntry;
 import be.valuya.accountingtroll.domain.ATBookPeriod;
 import be.valuya.accountingtroll.domain.ATBookYear;
 import be.valuya.accountingtroll.domain.ATPeriodType;
+import be.valuya.accountingtroll.domain.ATThirdParty;
+import be.valuya.accountingtroll.domain.ATThirdPartyType;
+import be.valuya.accountingtroll.domain.AccountingEntryType;
+import be.valuya.accountingtroll.event.AccountingEventHandler;
+import be.valuya.accountingtroll.event.BalanceChangeEvent;
 import be.valuya.bob.core.BobFileConfiguration;
 import be.valuya.bob.core.api.troll.MemoryCachingBobAccountingManager;
 import be.valuya.winbooks.api.accountingtroll.WinbooksTrollAccountingManager;
@@ -14,13 +20,16 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
 
+import java.math.BigDecimal;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.time.LocalDate;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.IntSummaryStatistics;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -28,6 +37,7 @@ import java.util.stream.Stream;
 @RunWith(JUnit4.class)
 public class AccountingTrollImplementationComparisonTest {
 
+    public static final double EPSILON = 0.00000001;
     private Map<String, AccountingManager> accountingManagers = new HashMap<>();
 
     @Before
@@ -84,6 +94,35 @@ public class AccountingTrollImplementationComparisonTest {
                 .filter(b -> this.isCOmparableAccountCode(b.getCode()));
 
         this.testImplementations(streamFunction);
+    }
+
+
+    @Test
+    public void testAccountingEntries() {
+        System.out.println("");
+        System.out.println("streamAccountingEntries");
+
+        Function<AccountingManager, Stream<ATAccountingEntry>> streamFunction = this::streamManagerAccountingEntries;
+
+        this.testImplementations(streamFunction);
+    }
+
+    private Stream<ATAccountingEntry> streamManagerAccountingEntries(AccountingManager accountingManager) {
+        String managerKey = accountingManagers.entrySet().stream()
+                .filter(e -> e.getValue() == accountingManager)
+                .map(e -> e.getKey())
+                .findAny()
+                .orElseThrow(IllegalStateException::new);
+        Comparator<ATAccountingEntry> comparator = Comparator
+                .comparing((ATAccountingEntry c) -> c.getBookPeriod().getStartDate())
+                .thenComparing((ATAccountingEntry c) -> c.getAccountOptional().orElseThrow(IllegalStateException::new).getCode())
+                .thenComparing((ATAccountingEntry c) -> c.getDate());
+
+        AccountingEventListener eventListener = new TestAccountingEventHandler(managerKey);
+        return accountingManager.streamAccountingEntries(eventListener)
+                .filter(b -> b.getBookPeriod().getBookYear().getStartDate().getYear() == 2016)
+                .sorted(comparator)
+                .filter(this::isComparableAccountinEntry);
     }
 
 
@@ -153,8 +192,87 @@ public class AccountingTrollImplementationComparisonTest {
             return bookPeriodsEqual((ATBookPeriod) valA, (ATBookPeriod) valB);
         } else if (valA instanceof ATAccount) {
             return accountsEqual((ATAccount) valA, (ATAccount) valB);
+        } else if (valA instanceof ATAccountingEntry) {
+            return acountingEntriesEqual((ATAccountingEntry) valA, (ATAccountingEntry) valB);
         }
         return false;
+    }
+
+    private boolean acountingEntriesEqual(ATAccountingEntry valA, ATAccountingEntry valB) {
+        LocalDate dateA = valA.getDate();
+        Optional<ATThirdParty> thirdPartyOptionalA = valA.getThirdPartyOptional();
+        Optional<ATAccount> accountOptionalA = valA.getAccountOptional();
+        BigDecimal amountA = valA.getAmount();
+        AccountingEntryType typeA = valA.getAccountingEntryType();
+
+        LocalDate dateB = valB.getDate();
+        Optional<ATThirdParty> thirdPartyOptionalB = valB.getThirdPartyOptional();
+        Optional<ATAccount> accountOptionalB = valB.getAccountOptional();
+        BigDecimal amountB = valB.getAmount();
+        AccountingEntryType typeB = valB.getAccountingEntryType();
+
+        boolean thirdPartiesEqual;
+        if (thirdPartyOptionalA.isPresent() && thirdPartyOptionalB.isPresent()) {
+            ATThirdParty thirdPartyA = thirdPartyOptionalA.get();
+            ATThirdParty thirdPartyB = thirdPartyOptionalB.get();
+            thirdPartiesEqual = thirdPartiesEqual(thirdPartyA, thirdPartyB);
+        } else {
+            // Ignore third parties on accounts 550000, as winbooks seems to rop them
+            String accountCode = valA.getAccountOptional()
+                    .map(ATAccount::getCode)
+                    .orElse("0");
+
+            thirdPartiesEqual = accountCode.equals("550000") || thirdPartyOptionalA.isPresent() == thirdPartyOptionalB.isPresent();
+        }
+
+
+        boolean accountsEqual;
+        if (accountOptionalA.isPresent()) {
+            ATAccount accountA = accountOptionalA.get();
+            ATAccount accountB = accountOptionalB.get();
+            accountsEqual = accountsEqual(accountA, accountB);
+        } else {
+            accountsEqual = !accountOptionalB.isPresent();
+        }
+
+        boolean amountEquals = Math.abs(amountA.subtract(amountB).doubleValue()) < EPSILON;
+
+        return dateA.equals(dateB)
+                && thirdPartiesEqual
+                && accountsEqual
+                && amountEquals
+                && typeA == typeB
+                ;
+    }
+
+
+    private boolean thirdPartiesEqual(ATThirdParty valA, ATThirdParty valB) {
+        Optional<ATThirdPartyType> typeOptionalA = valA.getTypeOptional();
+        Optional<ATThirdPartyType> typeOptionalB = valB.getTypeOptional();
+        boolean typeEquals = typeOptionalA.equals(typeOptionalB);
+
+        Optional<String> languageOptionalA = valA.getLanguageOptional();
+        Optional<String> languageOptionalB = valB.getLanguageOptional();
+        boolean languagesEqual = optionalStringsEqual(languageOptionalA, languageOptionalB);
+
+        Optional<String> fullNameOptionalA = valA.getFullNameOptional();
+        Optional<String> fullNameOptionalB = valB.getFullNameOptional();
+        boolean fullNameEqual = optionalStringsEqual(fullNameOptionalA, fullNameOptionalB);
+
+        Optional<String> addressOptionalA = valA.getAddressOptional();
+        Optional<String> addressOptionalB = valB.getAddressOptional();
+        boolean addressEquals = optionalStringsEqual(addressOptionalA, addressOptionalB);
+
+        return typeEquals
+                && languagesEqual
+                && fullNameEqual
+                && addressEquals;
+    }
+
+    private boolean optionalStringsEqual(Optional<String> optionalA, Optional<String> optionalB) {
+        Optional<String> filteredA = optionalA.filter(s -> !s.trim().isEmpty());
+        Optional<String> filteredB = optionalB.filter(s -> !s.trim().isEmpty());
+        return filteredA.equals(filteredB);
     }
 
     private boolean accountsEqual(ATAccount valA, ATAccount valB) {
@@ -243,5 +361,26 @@ public class AccountingTrollImplementationComparisonTest {
                 && !code.equals("757010")
                 && !code.equals("757200")
                 ;
+    }
+
+
+    private boolean isComparableAccountinEntry(ATAccountingEntry b) {
+        return b.getBookPeriod().getPeriodType() == ATPeriodType.GENERAL
+                ;
+    }
+
+
+    private static class TestAccountingEventHandler extends AccountingEventHandler {
+
+        private String key;
+
+        public TestAccountingEventHandler(String key) {
+            this.key = key;
+        }
+
+        @Override
+        public void handleBalanceChangeEvent(BalanceChangeEvent balanceChangeEvent) {
+//            System.out.println(key + " : " + balanceChangeEvent);
+        }
     }
 }
