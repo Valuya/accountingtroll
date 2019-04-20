@@ -10,21 +10,44 @@ public class ATAccountingEntry {
 
     private ATBookPeriod bookPeriod;
     private LocalDate date;
+    /**
+     * Entry amount. Positive values for a 'credit' entry, negative values for a 'debit' entry, regardless
+     * of the account type.
+     */
     private BigDecimal amount;
+    /**
+     * The journal code.
+     */
     private String dbkCode;
+    /**
+     * The document number. This represent the id of the document within a journal/period.
+     */
+    private int docNumber;
+    /**
+     * An index to order entries
+     */
+    private int orderingNumber;
+    // TODO: remove
     private AccountingEntryDocumentType accountingEntryDocumentType;
+    // TODO: move to account
     private AccountingEntryType accountingEntryType;
     private ATAccount account;
+    /**
+     * Each entry should be matched by another, so that the overall balance is zero.
+     * Sometimes, the related entry is not (yet) present.
+     */
     private boolean matched;
-    private int docNumber;
 
+    /**
+     * The document from which this entry was derived.
+     */
     private Optional<ATDocument> documentOptional = Optional.empty();
-    private Optional<ATDocument> matchedDocumentOptional = Optional.empty();
     private Optional<ATTax> taxOptional = Optional.empty();
     private Optional<ATThirdParty> thirdPartyOptional = Optional.empty();
     private Optional<LocalDate> documentDateOptional = Optional.empty();
     private Optional<LocalDate> dueDateOptional = Optional.empty();
     private Optional<String> commentOptional = Optional.empty();
+    private Optional<ATAccountingEntry> matchedEntry = Optional.empty();
 
     public ATBookPeriod getBookPeriod() {
         return bookPeriod;
@@ -130,14 +153,6 @@ public class ATAccountingEntry {
         this.matched = matched;
     }
 
-    public Optional<ATDocument> getMatchedDocumentOptional() {
-        return matchedDocumentOptional;
-    }
-
-    public void setMatchedDocumentOptional(Optional<ATDocument> matchedDocumentOptional) {
-        this.matchedDocumentOptional = matchedDocumentOptional;
-    }
-
     public int getDocNumber() {
         return docNumber;
     }
@@ -154,6 +169,22 @@ public class ATAccountingEntry {
         this.account = account;
     }
 
+    public Optional<ATAccountingEntry> getMatchedEntry() {
+        return matchedEntry;
+    }
+
+    public void setMatchedEntry(Optional<ATAccountingEntry> matchedEntry) {
+        this.matchedEntry = matchedEntry;
+    }
+
+    public int getOrderingNumber() {
+        return orderingNumber;
+    }
+
+    public void setOrderingNumber(int orderingNumber) {
+        this.orderingNumber = orderingNumber;
+    }
+
     @Override
     public String toString() {
         return "ATAccountingEntry{" +
@@ -161,7 +192,9 @@ public class ATAccountingEntry {
                 ", date=" + date +
                 ", amount=" + amount +
                 ", dbkCode='" + dbkCode + '\'' +
+                ", accountingEntryType=" + accountingEntryType +
                 ", account=" + account +
+                ", docNumber=" + docNumber +
                 '}';
     }
 }

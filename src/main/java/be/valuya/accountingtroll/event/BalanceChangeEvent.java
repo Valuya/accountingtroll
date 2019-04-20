@@ -51,8 +51,9 @@ public class BalanceChangeEvent {
     public String toString() {
         return "BalanceChangeEvent{" +
                 "account=" + account +
-                ", accountingEntryOptional=" + accountingEntryOptional +
                 ", newBalance=" + newBalance +
+                ", date=" + date +
+                ", accountingEntryOptional=" + accountingEntryOptional +
                 '}';
     }
 }

@@ -10,8 +10,9 @@ import be.valuya.accountingtroll.domain.ATThirdPartyType;
 import be.valuya.accountingtroll.domain.AccountingEntryType;
 import be.valuya.accountingtroll.event.AccountingEventHandler;
 import be.valuya.accountingtroll.event.BalanceChangeEvent;
-import be.valuya.bob.core.BobFileConfiguration;
 import be.valuya.bob.core.api.troll.MemoryCachingBobAccountingManager;
+import be.valuya.bob.core.config.BalanceComputationMode;
+import be.valuya.bob.core.config.BobFileConfiguration;
 import be.valuya.winbooks.api.accountingtroll.WinbooksTrollAccountingManager;
 import be.valuya.winbooks.api.extra.WinbooksFileConfiguration;
 import org.junit.Assert;
@@ -46,7 +47,7 @@ public class AccountingTrollImplementationComparisonTest {
         Path bobTestPath = Paths.get(bobTestFolderString);
         BobFileConfiguration bobFileConfiguration = new BobFileConfiguration(bobTestPath);
         bobFileConfiguration.setReadTablesToMemory(true);
-        bobFileConfiguration.setIgnoreOpeningPeriodBalances(true);
+        bobFileConfiguration.setBalanceComputationMode(BalanceComputationMode.IGNORE_OPENINGS_FOR_INTERMEDIATE_YEARS);
         MemoryCachingBobAccountingManager bobAccountingManager = new MemoryCachingBobAccountingManager(bobFileConfiguration);
         accountingManagers.put("bob", bobAccountingManager);
 
