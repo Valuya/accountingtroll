@@ -1,5 +1,6 @@
 package be.valuya.accountingtroll.domain;
 
+import java.time.LocalDate;
 import java.util.Objects;
 
 public class ATDocument {
