@@ -11,6 +11,7 @@ public class ATAccount {
     private String code;
     private boolean analytics;
     private boolean yearlyBalanceReset;
+    private ATAccountImputationType imputationType;
     private Optional<String> currencyOptional = Optional.empty();
 
     public String getName() {
@@ -51,6 +52,14 @@ public class ATAccount {
 
     public void setYearlyBalanceReset(boolean yearlyBalanceReset) {
         this.yearlyBalanceReset = yearlyBalanceReset;
+    }
+
+    public ATAccountImputationType getImputationType() {
+        return imputationType;
+    }
+
+    public void setImputationType(ATAccountImputationType imputationType) {
+        this.imputationType = imputationType;
     }
 
     @Override

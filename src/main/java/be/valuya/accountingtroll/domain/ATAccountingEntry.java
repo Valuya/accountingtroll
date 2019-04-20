@@ -14,12 +14,13 @@ public class ATAccountingEntry {
     private String dbkCode;
     private AccountingEntryDocumentType accountingEntryDocumentType;
     private AccountingEntryType accountingEntryType;
+    private ATAccount account;
     private boolean matched;
+    private int docNumber;
 
     private Optional<ATDocument> documentOptional = Optional.empty();
     private Optional<ATDocument> matchedDocumentOptional = Optional.empty();
     private Optional<ATTax> taxOptional = Optional.empty();
-    private Optional<ATAccount> accountOptional = Optional.empty();
     private Optional<ATThirdParty> thirdPartyOptional = Optional.empty();
     private Optional<LocalDate> documentDateOptional = Optional.empty();
     private Optional<LocalDate> dueDateOptional = Optional.empty();
@@ -55,14 +56,6 @@ public class ATAccountingEntry {
 
     public void setDbkCode(String dbkCode) {
         this.dbkCode = dbkCode;
-    }
-
-    public Optional<ATAccount> getAccountOptional() {
-        return accountOptional;
-    }
-
-    public void setAccountOptional(Optional<ATAccount> accountOptional) {
-        this.accountOptional = accountOptional;
     }
 
     public Optional<ATThirdParty> getThirdPartyOptional() {
@@ -145,14 +138,30 @@ public class ATAccountingEntry {
         this.matchedDocumentOptional = matchedDocumentOptional;
     }
 
+    public int getDocNumber() {
+        return docNumber;
+    }
+
+    public void setDocNumber(int docNumber) {
+        this.docNumber = docNumber;
+    }
+
+    public ATAccount getAccount() {
+        return account;
+    }
+
+    public void setAccount(ATAccount account) {
+        this.account = account;
+    }
+
     @Override
     public String toString() {
         return "ATAccountingEntry{" +
-                "accountOptional=" + accountOptional +
-                ", thirdPartyOptional=" + thirdPartyOptional +
-                ", bookPeriod=" + bookPeriod +
+                "bookPeriod=" + bookPeriod +
                 ", date=" + date +
                 ", amount=" + amount +
+                ", dbkCode='" + dbkCode + '\'' +
+                ", account=" + account +
                 '}';
     }
 }

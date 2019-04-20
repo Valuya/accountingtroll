@@ -148,7 +148,7 @@ public class AccountingTrollImplementationComparisonTest {
     private Stream<ATAccountingEntry> streamManagerAccountingEntries(AccountingManager accountingManager) {
         Comparator<ATAccountingEntry> comparator = Comparator
                 .comparing((ATAccountingEntry c) -> c.getBookPeriod().getStartDate())
-                .thenComparing((ATAccountingEntry c) -> c.getAccountOptional().orElseThrow(IllegalStateException::new).getCode())
+                .thenComparing((ATAccountingEntry c) -> c.getAccount().getCode())
                 .thenComparing(ATAccountingEntry::getDate);
 
         return accountingManager.streamAccountingEntries(new AccountingEventHandler())
@@ -250,13 +250,13 @@ public class AccountingTrollImplementationComparisonTest {
     private boolean accountingEntriesEqual(ATAccountingEntry valA, ATAccountingEntry valB) {
         LocalDate dateA = valA.getDate();
         Optional<ATThirdParty> thirdPartyOptionalA = valA.getThirdPartyOptional();
-        Optional<ATAccount> accountOptionalA = valA.getAccountOptional();
+        ATAccount accountA = valA.getAccount();
         BigDecimal amountA = valA.getAmount();
         AccountingEntryType typeA = valA.getAccountingEntryType();
 
         LocalDate dateB = valB.getDate();
         Optional<ATThirdParty> thirdPartyOptionalB = valB.getThirdPartyOptional();
-        Optional<ATAccount> accountOptionalB = valB.getAccountOptional();
+        ATAccount accountB = valB.getAccount();
         BigDecimal amountB = valB.getAmount();
         AccountingEntryType typeB = valB.getAccountingEntryType();
 
@@ -267,23 +267,14 @@ public class AccountingTrollImplementationComparisonTest {
             thirdPartiesEqual = thirdPartiesEqual(thirdPartyA, thirdPartyB);
         } else {
             // Ignore third parties on accounts 550000, as winbooks seems to drop them
-            String accountCode = valA.getAccountOptional()
-                    .map(ATAccount::getCode)
-                    .orElse("0");
+            ATAccount account = valA.getAccount();
+            String accountCode = account.getCode();
 
             thirdPartiesEqual = accountCode.equals("550000") || thirdPartyOptionalA.isPresent() == thirdPartyOptionalB.isPresent();
         }
 
 
-        boolean accountsEqual;
-        if (accountOptionalA.isPresent() && accountOptionalB.isPresent()) {
-            ATAccount accountA = accountOptionalA.get();
-            ATAccount accountB = accountOptionalB.get();
-            accountsEqual = accountsEqual(accountA, accountB);
-        } else {
-            accountsEqual = accountOptionalA.isPresent() == accountOptionalB.isPresent();
-        }
-
+        boolean accountsEqual = accountsEqual(accountA, accountB);
         boolean amountEquals = Math.abs(amountA.subtract(amountB).doubleValue()) < EPSILON;
 
         return dateA.equals(dateB)
