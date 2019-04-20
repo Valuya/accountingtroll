@@ -45,6 +45,8 @@ public class AccountingTrollImplementationComparisonTest {
         String bobTestFolderString = System.getProperty("bob.test.folder");
         Path bobTestPath = Paths.get(bobTestFolderString);
         BobFileConfiguration bobFileConfiguration = new BobFileConfiguration(bobTestPath);
+        bobFileConfiguration.setReadTablesToMemory(true);
+        bobFileConfiguration.setIgnoreOpeningPeriodBalances(true);
         MemoryCachingBobAccountingManager bobAccountingManager = new MemoryCachingBobAccountingManager(bobFileConfiguration);
         accountingManagers.put("bob", bobAccountingManager);
 
@@ -99,30 +101,59 @@ public class AccountingTrollImplementationComparisonTest {
 
     @Test
     public void testAccountingEntries() {
+
         System.out.println("");
         System.out.println("streamAccountingEntries");
 
         Function<AccountingManager, Stream<ATAccountingEntry>> streamFunction = this::streamManagerAccountingEntries;
-
         this.testImplementations(streamFunction);
+
+
     }
 
+
+    @Test
+    public void testAccountingEntriesBalance() {
+        System.out.println("");
+        System.out.println("testAccountingEntriesBalance");
+
+        Map<AccountingManager, TestAccountingEventHandler> listenerMap = accountingManagers.entrySet()
+                .stream()
+                .collect(Collectors.toMap(
+                        e -> accountingManagers.get(e.getKey()),
+                        f -> new TestAccountingEventHandler(f.getKey())
+                ));
+
+        listenerMap.entrySet()
+                .forEach(e -> e.getKey().streamAccountingEntries(e.getValue()).count());
+
+        Function<AccountingManager, Stream<BalanceChangeEvent>> balanceChangeEventStreamFunction =
+                manager -> listenerMap.get(manager).getLastBalanceByAccount().values().stream()
+                        .filter(e -> this.isInAllImplementation(e.getAccount(), listenerMap))
+                        .sorted(Comparator
+                                .comparing((BalanceChangeEvent e) -> e.getAccount().getCode())
+                                .thenComparing((BalanceChangeEvent e) -> e.getAccountingEntryOptional().map(ATAccountingEntry::getDate).orElse(LocalDate.MIN))
+                        );
+
+        this.testImplementations(balanceChangeEventStreamFunction);
+    }
+
+    private boolean isInAllImplementation(ATAccount account, Map<AccountingManager, TestAccountingEventHandler> listenerMap) {
+        return listenerMap.values()
+                .stream()
+                .allMatch(l -> l.getLastBalanceByAccount().containsKey(account.getCode()));
+    }
+
+
     private Stream<ATAccountingEntry> streamManagerAccountingEntries(AccountingManager accountingManager) {
-        String managerKey = accountingManagers.entrySet().stream()
-                .filter(e -> e.getValue() == accountingManager)
-                .map(e -> e.getKey())
-                .findAny()
-                .orElseThrow(IllegalStateException::new);
         Comparator<ATAccountingEntry> comparator = Comparator
                 .comparing((ATAccountingEntry c) -> c.getBookPeriod().getStartDate())
                 .thenComparing((ATAccountingEntry c) -> c.getAccountOptional().orElseThrow(IllegalStateException::new).getCode())
-                .thenComparing((ATAccountingEntry c) -> c.getDate());
+                .thenComparing(ATAccountingEntry::getDate);
 
-        AccountingEventListener eventListener = new TestAccountingEventHandler(managerKey);
-        return accountingManager.streamAccountingEntries(eventListener)
-                .filter(b -> b.getBookPeriod().getBookYear().getStartDate().getYear() == 2016)
-                .sorted(comparator)
-                .filter(this::isComparableAccountinEntry);
+        return accountingManager.streamAccountingEntries(new AccountingEventHandler())
+                .filter(this::isComparableAccountinEntry)
+                .sorted(comparator);
     }
 
 
@@ -131,7 +162,7 @@ public class AccountingTrollImplementationComparisonTest {
                 .stream()
                 .sequential()
                 .collect(Collectors.toMap(
-                        e -> e.getKey(),
+                        Map.Entry::getKey,
                         e -> collectStream(e.getValue(), testFunction)
                 ));
         IntSummaryStatistics countStatistics = implementationsResults.values()
@@ -193,12 +224,30 @@ public class AccountingTrollImplementationComparisonTest {
         } else if (valA instanceof ATAccount) {
             return accountsEqual((ATAccount) valA, (ATAccount) valB);
         } else if (valA instanceof ATAccountingEntry) {
-            return acountingEntriesEqual((ATAccountingEntry) valA, (ATAccountingEntry) valB);
+            return accountingEntriesEqual((ATAccountingEntry) valA, (ATAccountingEntry) valB);
+        } else if (valA instanceof BalanceChangeEvent) {
+            return balanceChangeEventEquals((BalanceChangeEvent) valA, (BalanceChangeEvent) valB);
         }
         return false;
     }
 
-    private boolean acountingEntriesEqual(ATAccountingEntry valA, ATAccountingEntry valB) {
+    private boolean balanceChangeEventEquals(BalanceChangeEvent valA, BalanceChangeEvent valB) {
+        ATAccount accountA = valA.getAccount();
+        BigDecimal newBalanceA = valA.getNewBalance();
+        LocalDate dateA = valA.getDate();
+
+        ATAccount accountB = valB.getAccount();
+        BigDecimal newBalanceB = valB.getNewBalance();
+        LocalDate dateB = valB.getDate();
+
+        boolean newBalanceEqual = Math.abs(newBalanceA.subtract(newBalanceB).doubleValue()) < EPSILON;
+
+        return accountsEqual(accountA, accountB)
+                && newBalanceEqual
+                && dateA.equals(dateB);
+    }
+
+    private boolean accountingEntriesEqual(ATAccountingEntry valA, ATAccountingEntry valB) {
         LocalDate dateA = valA.getDate();
         Optional<ATThirdParty> thirdPartyOptionalA = valA.getThirdPartyOptional();
         Optional<ATAccount> accountOptionalA = valA.getAccountOptional();
@@ -217,7 +266,7 @@ public class AccountingTrollImplementationComparisonTest {
             ATThirdParty thirdPartyB = thirdPartyOptionalB.get();
             thirdPartiesEqual = thirdPartiesEqual(thirdPartyA, thirdPartyB);
         } else {
-            // Ignore third parties on accounts 550000, as winbooks seems to rop them
+            // Ignore third parties on accounts 550000, as winbooks seems to drop them
             String accountCode = valA.getAccountOptional()
                     .map(ATAccount::getCode)
                     .orElse("0");
@@ -227,12 +276,12 @@ public class AccountingTrollImplementationComparisonTest {
 
 
         boolean accountsEqual;
-        if (accountOptionalA.isPresent()) {
+        if (accountOptionalA.isPresent() && accountOptionalB.isPresent()) {
             ATAccount accountA = accountOptionalA.get();
             ATAccount accountB = accountOptionalB.get();
             accountsEqual = accountsEqual(accountA, accountB);
         } else {
-            accountsEqual = !accountOptionalB.isPresent();
+            accountsEqual = accountOptionalA.isPresent() == accountOptionalB.isPresent();
         }
 
         boolean amountEquals = Math.abs(amountA.subtract(amountB).doubleValue()) < EPSILON;
@@ -366,13 +415,15 @@ public class AccountingTrollImplementationComparisonTest {
 
     private boolean isComparableAccountinEntry(ATAccountingEntry b) {
         return b.getBookPeriod().getPeriodType() == ATPeriodType.GENERAL
+                && b.getBookPeriod().getBookYear().getStartDate().getYear() == 2016
                 ;
     }
 
 
-    private static class TestAccountingEventHandler extends AccountingEventHandler {
+    private class TestAccountingEventHandler extends AccountingEventHandler {
 
         private String key;
+        private Map<String, BalanceChangeEvent> lastBalanceByAccount = new HashMap<>();
 
         public TestAccountingEventHandler(String key) {
             this.key = key;
@@ -380,7 +431,20 @@ public class AccountingTrollImplementationComparisonTest {
 
         @Override
         public void handleBalanceChangeEvent(BalanceChangeEvent balanceChangeEvent) {
-//            System.out.println(key + " : " + balanceChangeEvent);
+            ATAccount account = balanceChangeEvent.getAccount();
+            String code = account.getCode();
+            if (code.equals("610300")) {
+                System.out.println(key + " " + balanceChangeEvent);
+            }
+            LocalDate date = balanceChangeEvent.getDate();
+            // Only consider balances before book year 2017 for comparison
+            if (date.isBefore(LocalDate.of(2017, 10, 1)) && isCOmparableAccountCode(code)) {
+                lastBalanceByAccount.put(code, balanceChangeEvent);
+            }
+        }
+
+        public Map<String, BalanceChangeEvent> getLastBalanceByAccount() {
+            return lastBalanceByAccount;
         }
     }
 }

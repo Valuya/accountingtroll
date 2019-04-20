@@ -60,6 +60,7 @@ public class ATBookPeriod {
                 ", startDate=" + startDate +
                 ", endDate=" + endDate +
                 ", periodType=" + periodType +
+                ", bookYear=" + bookYear.getName() +
                 '}';
     }
 
