@@ -27,8 +27,13 @@ public class ATAccountingEntry implements Comparable<ATAccountingEntry> {
     private String dbkCode;
     /**
      * The document number. This represent the id of the document within a journal/period.
+     * Optionally, the doc number may be typed.
      */
-    private int docNumber;
+    private String docNumber;
+    /**
+     * An optional type for the docNumber
+     */
+    private Optional<AccountingEntryDocumentNumberType> docNumberTypeOptional;
     /**
      * An index to order entries
      */
@@ -159,11 +164,11 @@ public class ATAccountingEntry implements Comparable<ATAccountingEntry> {
         this.matched = matched;
     }
 
-    public int getDocNumber() {
+    public String getDocNumber() {
         return docNumber;
     }
 
-    public void setDocNumber(int docNumber) {
+    public void setDocNumber(String docNumber) {
         this.docNumber = docNumber;
     }
 
@@ -189,6 +194,14 @@ public class ATAccountingEntry implements Comparable<ATAccountingEntry> {
 
     public void setOrderingNumber(int orderingNumber) {
         this.orderingNumber = orderingNumber;
+    }
+
+    public Optional<AccountingEntryDocumentNumberType> getDocNumberTypeOptional() {
+        return docNumberTypeOptional;
+    }
+
+    public void setDocNumberTypeOptional(Optional<AccountingEntryDocumentNumberType> docNumberTypeOptional) {
+        this.docNumberTypeOptional = docNumberTypeOptional;
     }
 
     @Override
