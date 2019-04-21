@@ -3,10 +3,16 @@ package be.valuya.accountingtroll.domain;
 import javax.validation.constraints.NotNull;
 import java.math.BigDecimal;
 import java.time.LocalDate;
+import java.util.Comparator;
 import java.util.Optional;
 
 @NotNull
-public class ATAccountingEntry {
+public class ATAccountingEntry implements Comparable<ATAccountingEntry> {
+
+    private final static Comparator<ATAccountingEntry> COMPARATOR = Comparator
+            .comparing(ATAccountingEntry::getBookPeriod)
+            .thenComparing(ATAccountingEntry::getDate)
+            .thenComparing(ATAccountingEntry::getDocNumber);
 
     private ATBookPeriod bookPeriod;
     private LocalDate date;
@@ -196,5 +202,10 @@ public class ATAccountingEntry {
                 ", account=" + account +
                 ", docNumber=" + docNumber +
                 '}';
+    }
+
+    @Override
+    public int compareTo(ATAccountingEntry o) {
+        return COMPARATOR.compare(this, o);
     }
 }

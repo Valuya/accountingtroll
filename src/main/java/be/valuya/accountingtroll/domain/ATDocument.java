@@ -2,6 +2,7 @@ package be.valuya.accountingtroll.domain;
 
 import java.time.LocalDate;
 import java.util.Objects;
+import java.util.Optional;
 
 public class ATDocument {
 
@@ -9,6 +10,7 @@ public class ATDocument {
     private ATBookPeriod bookPeriod;
     private String dbkCode;
     private int docNumber;
+    private Optional<LocalDate> dateOptional;
 
     public String getId() {
         return id;
@@ -40,6 +42,14 @@ public class ATDocument {
 
     public void setDocNumber(int docNumber) {
         this.docNumber = docNumber;
+    }
+
+    public Optional<LocalDate> getDateOptional() {
+        return dateOptional;
+    }
+
+    public void setDateOptional(Optional<LocalDate> dateOptional) {
+        this.dateOptional = dateOptional;
     }
 
     @Override

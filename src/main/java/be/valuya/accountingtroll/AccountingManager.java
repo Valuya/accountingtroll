@@ -8,6 +8,7 @@ import be.valuya.accountingtroll.domain.ATBookYear;
 import be.valuya.accountingtroll.domain.ATDocument;
 import be.valuya.accountingtroll.domain.ATThirdParty;
 
+import java.io.InputStream;
 import java.nio.file.Path;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -30,6 +31,6 @@ public interface AccountingManager {
 
     Stream<ATDocument> streamDocuments();
 
-    Optional<Path> getEntryDocumentPathOptional(ATAccountingEntry accountingEntry);
+    InputStream streamDocumentContent(ATDocument document) throws Exception;
 
 }

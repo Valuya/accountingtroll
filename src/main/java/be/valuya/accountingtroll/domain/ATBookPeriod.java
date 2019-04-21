@@ -2,10 +2,18 @@ package be.valuya.accountingtroll.domain;
 
 import javax.validation.constraints.NotNull;
 import java.time.LocalDate;
+import java.util.Comparator;
 import java.util.Objects;
 
 @NotNull
-public class ATBookPeriod {
+public class ATBookPeriod implements Comparable<ATBookPeriod> {
+
+    private final static Comparator<ATBookPeriod> COMPARATOR = Comparator
+            .comparing(ATBookPeriod::getBookYear)
+            .thenComparing(ATBookPeriod::getPeriodType)
+            .thenComparing(ATBookPeriod::getStartDate)
+            .thenComparing(ATBookPeriod::getEndDate)
+            .thenComparing(ATBookPeriod::getName);
 
     private String name;
     private LocalDate startDate;
@@ -79,5 +87,10 @@ public class ATBookPeriod {
     @Override
     public int hashCode() {
         return Objects.hash(name, startDate, endDate, bookYear, periodType);
+    }
+
+    @Override
+    public int compareTo(ATBookPeriod other) {
+        return COMPARATOR.compare(this, other);
     }
 }
