@@ -14,7 +14,7 @@ import be.valuya.bob.core.api.troll.MemoryCachingBobAccountingManager;
 import be.valuya.bob.core.config.BalanceComputationMode;
 import be.valuya.bob.core.config.BobFileConfiguration;
 import be.valuya.winbooks.api.accountingtroll.WinbooksTrollAccountingManager;
-import be.valuya.winbooks.api.extra.WinbooksFileConfiguration;
+import be.valuya.winbooks.api.extra.config.WinbooksFileConfiguration;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;

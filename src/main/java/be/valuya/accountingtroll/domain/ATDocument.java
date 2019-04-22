@@ -10,8 +10,8 @@ public class ATDocument {
     private String id;
     private ATBookPeriod bookPeriod;
     private String dbkCode;
+    private String documentNumnber;
 
-    private Optional<String> docNumberOptional = Optional.empty();
     private Optional<LocalDate> dateOptional = Optional.empty();
     private Optional<Integer> pageCountOptional = Optional.empty();
     private Optional<LocalDateTime> creationTimeOptional = Optional.empty();
@@ -41,12 +41,12 @@ public class ATDocument {
         this.dbkCode = dbkCode;
     }
 
-    public Optional<String> getDocNumberOptional() {
-        return docNumberOptional;
+    public String getDocumentNumnber() {
+        return documentNumnber;
     }
 
-    public void setDocNumberOptional(Optional<String> docNumberOptional) {
-        this.docNumberOptional = docNumberOptional;
+    public void setDocumentNumnber(String documentNumnber) {
+        this.documentNumnber = documentNumnber;
     }
 
     public Optional<LocalDate> getDateOptional() {
@@ -89,7 +89,7 @@ public class ATDocument {
         return Objects.equals(id, that.id) &&
                 Objects.equals(bookPeriod, that.bookPeriod) &&
                 Objects.equals(dbkCode, that.dbkCode) &&
-                Objects.equals(docNumberOptional, that.docNumberOptional) &&
+                Objects.equals(documentNumnber, that.documentNumnber) &&
                 Objects.equals(dateOptional, that.dateOptional) &&
                 Objects.equals(pageCountOptional, that.pageCountOptional) &&
                 Objects.equals(creationTimeOptional, that.creationTimeOptional) &&
@@ -98,15 +98,6 @@ public class ATDocument {
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, bookPeriod, dbkCode, docNumberOptional, dateOptional, pageCountOptional, creationTimeOptional, updateTimeOptional);
-    }
-
-    @Override
-    public String toString() {
-        return "ATDocument{" +
-                "id='" + id + '\'' +
-                ", bookPeriod=" + bookPeriod +
-                ", dbkCode='" + dbkCode + '\'' +
-                '}';
+        return Objects.hash(id, bookPeriod, dbkCode, documentNumnber, dateOptional, pageCountOptional, creationTimeOptional, updateTimeOptional);
     }
 }
