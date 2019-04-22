@@ -11,11 +11,11 @@ public class ATDocument {
     private ATBookPeriod bookPeriod;
     private String dbkCode;
 
-    private Optional<String> docNumberOptional;
-    private Optional<LocalDate> dateOptional;
-    private Optional<Integer> pageCountOptional;
-    private Optional<LocalDateTime> creationTimeOptional;
-    private Optional<LocalDateTime> updateTimeOptional;
+    private Optional<String> docNumberOptional = Optional.empty();
+    private Optional<LocalDate> dateOptional = Optional.empty();
+    private Optional<Integer> pageCountOptional = Optional.empty();
+    private Optional<LocalDateTime> creationTimeOptional = Optional.empty();
+    private Optional<LocalDateTime> updateTimeOptional = Optional.empty();
 
     public String getId() {
         return id;

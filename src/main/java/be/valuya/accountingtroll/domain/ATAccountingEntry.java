@@ -33,7 +33,7 @@ public class ATAccountingEntry implements Comparable<ATAccountingEntry> {
     /**
      * An optional type for the docNumber
      */
-    private Optional<AccountingEntryDocumentNumberType> docNumberTypeOptional;
+    private Optional<AccountingEntryDocumentNumberType> docNumberTypeOptional = Optional.empty();
     /**
      * An index to order entries
      */
