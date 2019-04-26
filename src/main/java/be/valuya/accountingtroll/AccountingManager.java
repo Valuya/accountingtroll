@@ -33,4 +33,6 @@ public interface AccountingManager {
 
     InputStream streamDocumentContent(ATDocument document) throws Exception;
 
+    void uploadDocument(Path documentPath, InputStream documentStream) throws Exception;
+
 }
