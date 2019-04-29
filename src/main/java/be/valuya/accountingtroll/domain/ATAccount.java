@@ -11,6 +11,7 @@ public class ATAccount {
     private String code;
     private boolean analytics;
     private boolean yearlyBalanceReset;
+    private boolean title;
     private ATAccountImputationType imputationType;
     private Optional<String> currencyOptional = Optional.empty();
 
@@ -62,6 +63,14 @@ public class ATAccount {
         this.imputationType = imputationType;
     }
 
+    public boolean isTitle() {
+        return title;
+    }
+
+    public void setTitle(boolean title) {
+        this.title = title;
+    }
+
     @Override
     public String toString() {
         return "ATAccount{" +
@@ -80,13 +89,14 @@ public class ATAccount {
         ATAccount atAccount = (ATAccount) o;
         return analytics == atAccount.analytics &&
                 yearlyBalanceReset == atAccount.yearlyBalanceReset &&
-                Objects.equals(name, atAccount.name) &&
+                title == atAccount.title &&
                 Objects.equals(code, atAccount.code) &&
+                imputationType == atAccount.imputationType &&
                 Objects.equals(currencyOptional, atAccount.currencyOptional);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(name, code, analytics, yearlyBalanceReset, currencyOptional);
+        return Objects.hash(code, analytics, yearlyBalanceReset, title, imputationType, currencyOptional);
     }
 }
