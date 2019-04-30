@@ -2,6 +2,7 @@ package be.valuya.accountingtroll;
 
 
 import be.valuya.accountingtroll.domain.ATAccount;
+import be.valuya.accountingtroll.domain.ATAccountBalance;
 import be.valuya.accountingtroll.domain.ATAccountingEntry;
 import be.valuya.accountingtroll.domain.ATBookPeriod;
 import be.valuya.accountingtroll.domain.ATBookYear;
@@ -27,7 +28,9 @@ public interface AccountingManager {
 
     Stream<ATThirdParty> streamThirdParties();
 
-    Stream<ATAccountingEntry> streamAccountingEntries(AccountingEventListener accountingEventListener);
+    Stream<ATAccountingEntry> streamAccountingEntries();
+
+    Stream<ATAccountBalance> streamAccountBalances();
 
     Stream<ATDocument> streamDocuments();
 
