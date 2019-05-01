@@ -1,56 +1,43 @@
 package be.valuya.accountingtroll.domain;
 
+import be.valuya.accountingtroll.AccountingConstants;
+
 import java.math.BigDecimal;
-import java.time.LocalDate;
-import java.util.Objects;
-import java.util.Optional;
 
 public class ATAccountBalance {
 
-    private ATAccount account;
-    private ATBookPeriod period;
-    private LocalDate date;
-    private BigDecimal balance;
-    private Optional<ATAccountingEntry> atAccountingEntryOptional = Optional.empty();
+    private final ATAccount account;
+    private final ATBookPeriod period;
+    private BigDecimal periodStartBalance = AccountingConstants.AMOUNT_ZERO;
+    private BigDecimal periodEndBalance = AccountingConstants.AMOUNT_ZERO;
+
+    public ATAccountBalance(ATAccount account, ATBookPeriod period) {
+        this.account = account;
+        this.period = period;
+    }
 
     public ATAccount getAccount() {
         return account;
-    }
-
-    public void setAccount(ATAccount account) {
-        this.account = account;
     }
 
     public ATBookPeriod getPeriod() {
         return period;
     }
 
-    public void setPeriod(ATBookPeriod period) {
-        this.period = period;
+    public BigDecimal getPeriodStartBalance() {
+        return periodStartBalance;
     }
 
-    public LocalDate getDate() {
-        return date;
+    public void setPeriodStartBalance(BigDecimal periodStartBalance) {
+        this.periodStartBalance = periodStartBalance;
     }
 
-    public void setDate(LocalDate date) {
-        this.date = date;
+    public BigDecimal getPeriodEndBalance() {
+        return periodEndBalance;
     }
 
-    public BigDecimal getBalance() {
-        return balance;
-    }
-
-    public void setBalance(BigDecimal balance) {
-        this.balance = balance;
-    }
-
-    public Optional<ATAccountingEntry> getAtAccountingEntryOptional() {
-        return atAccountingEntryOptional;
-    }
-
-    public void setAtAccountingEntryOptional(Optional<ATAccountingEntry> atAccountingEntryOptional) {
-        this.atAccountingEntryOptional = atAccountingEntryOptional;
+    public void setPeriodEndBalance(BigDecimal periodEndBalance) {
+        this.periodEndBalance = periodEndBalance;
     }
 
     @Override
@@ -58,24 +45,8 @@ public class ATAccountBalance {
         return "ATAccountBalance{" +
                 "account=" + account +
                 ", period=" + period +
-                ", date=" + date +
-                ", balance=" + balance +
+                ", periodStartBalance=" + periodStartBalance +
+                ", periodEndBalance=" + periodEndBalance +
                 '}';
-    }
-
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        ATAccountBalance that = (ATAccountBalance) o;
-        return Objects.equals(account, that.account) &&
-                Objects.equals(period, that.period) &&
-                Objects.equals(date, that.date) &&
-                Objects.equals(balance, that.balance);
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(account, period, date, balance);
     }
 }
