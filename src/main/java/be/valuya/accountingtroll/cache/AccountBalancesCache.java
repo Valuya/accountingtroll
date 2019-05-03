@@ -13,12 +13,17 @@ import java.util.Optional;
 import java.util.SortedMap;
 import java.util.concurrent.ConcurrentSkipListMap;
 
-class AccountBalanceCache {
+class AccountBalancesCache {
 
     private SortedMap<ATBookPeriod, BookPeriodAccountBalanceCache> periodBalances = new ConcurrentSkipListMap<>();
+    private boolean resetEveryYear;
 
-    AccountBalanceCache(List<ATBookPeriod> allPeriods) {
+    AccountBalancesCache(List<ATBookPeriod> allPeriods) {
         allPeriods.forEach(this::createPeriodCache);
+    }
+
+    void setResetEveryYear(boolean resetEveryYear) {
+        this.resetEveryYear = resetEveryYear;
     }
 
     List<ATAccountBalance> getPeriodBalances(ATBookPeriod bookPeriod) {
@@ -29,6 +34,13 @@ class AccountBalanceCache {
     void addAmountToBalance(ATBookPeriod bookPeriod, ATAccount account, BigDecimal amount) {
         BookPeriodAccountBalanceCache balanceCache = getBalanceCache(bookPeriod);
         ATAccountBalance updatedBalance = balanceCache.appendToBalance(account, amount);
+
+        propagateUpdatedBalance(updatedBalance);
+    }
+
+    void resetBalanceAmount(ATBookPeriod bookPeriod, ATAccount account, BigDecimal amount) {
+        BookPeriodAccountBalanceCache balanceCache = getBalanceCache(bookPeriod);
+        ATAccountBalance updatedBalance = balanceCache.resetBalance(account, amount);
 
         propagateUpdatedBalance(updatedBalance);
     }
@@ -45,7 +57,7 @@ class AccountBalanceCache {
         ATBookPeriod balancePeriod = updatedBalance.getPeriod();
         BigDecimal periodEndBalance = updatedBalance.getPeriodEndBalance();
         ATAccount account = updatedBalance.getAccount();
-        boolean yearlyBalanceReset = account.isYearlyBalanceReset();
+        boolean yearlyBalanceReset = account.isYearlyBalanceReset() || resetEveryYear;
 
         ATBookYear periodBookYear = period.getBookYear();
         ATBookYear balanceBookyear = balancePeriod.getBookYear();
@@ -72,6 +84,5 @@ class AccountBalanceCache {
         return Optional.ofNullable(balanceCacheNullable)
                 .orElseThrow(() -> new AccountingRuntimeException("No balance cache found for period " + bookPeriod));
     }
-
 
 }

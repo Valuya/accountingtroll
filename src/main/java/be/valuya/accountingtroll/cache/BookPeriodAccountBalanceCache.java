@@ -15,6 +15,11 @@ class BookPeriodAccountBalanceCache {
 
     private final ATBookPeriod bookPeriod;
     private final Map<ATAccount, ATAccountBalance> accountBalanceMap = new ConcurrentSkipListMap<>();
+    // A flag indicating if an account balance has been resetted.
+    // for opening periods entries, we may want to reset the balance to the entries value.
+    // since more than a single entry may exist for an account-period tuple, we have to keep track of this.
+    // TODO: implement cache for account-period-thirdparty
+    private final Map<ATAccount, Boolean> resettedMap = new ConcurrentSkipListMap<>();
 
     BookPeriodAccountBalanceCache(ATBookPeriod bookPeriod) {
         this.bookPeriod = bookPeriod;
@@ -40,8 +45,20 @@ class BookPeriodAccountBalanceCache {
         accountBalance.setPeriodEndBalance(amount);
     }
 
-    private ATAccountBalance createEmptyBalance(ATAccount account) {
-        ATAccountBalance accountBalance = new ATAccountBalance(account, bookPeriod);
+
+    ATAccountBalance resetBalance(ATAccount account, BigDecimal amount) {
+        ATAccountBalance accountBalance = accountBalanceMap.computeIfAbsent(account, this::createEmptyBalance);
+        boolean resetted = resettedMap.computeIfAbsent(account, a -> false);
+        if (resetted) {
+            appendToBalance(account, amount);
+        } else {
+            setBalance(account, amount);
+            resettedMap.put(account, true);
+        }
         return accountBalance;
+    }
+
+    private ATAccountBalance createEmptyBalance(ATAccount account) {
+        return new ATAccountBalance(account, bookPeriod);
     }
 }

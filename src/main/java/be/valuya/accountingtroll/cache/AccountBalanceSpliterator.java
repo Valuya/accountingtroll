@@ -5,6 +5,7 @@ import be.valuya.accountingtroll.domain.ATAccount;
 import be.valuya.accountingtroll.domain.ATAccountBalance;
 import be.valuya.accountingtroll.domain.ATAccountingEntry;
 import be.valuya.accountingtroll.domain.ATBookPeriod;
+import be.valuya.accountingtroll.domain.ATPeriodType;
 
 import java.math.BigDecimal;
 import java.util.Iterator;
@@ -15,16 +16,31 @@ import java.util.stream.Stream;
 
 public class AccountBalanceSpliterator implements Spliterator<ATAccountBalance> {
 
-    private final AccountBalanceCache accountBalanceCache;
+    private final AccountBalancesCache accountBalancesCache;
     private final Iterator<ATAccountingEntry> accountingEntriesIterator;
     private final List<ATBookPeriod> allPeriods;
     private int curPeriodIndex;
 
+    private boolean ignoreIntermediatePeriodOpeningEntry = false;
+    private boolean resetOnBookYearOpening = true;
+
     public AccountBalanceSpliterator(Stream<ATAccountingEntry> accountingEntriesStream, List<ATBookPeriod> allPeriods) {
         this.accountingEntriesIterator = accountingEntriesStream.iterator();
         this.allPeriods = allPeriods;
-        this.accountBalanceCache = new AccountBalanceCache(allPeriods);
+        this.accountBalancesCache = new AccountBalancesCache(allPeriods);
         this.curPeriodIndex = 0;
+    }
+
+    public void setIgnoreIntermediatePeriodOpeningEntry(boolean ignoreIntermediatePeriodOpeningEntry) {
+        this.ignoreIntermediatePeriodOpeningEntry = ignoreIntermediatePeriodOpeningEntry;
+    }
+
+    public void setResetOnBookYearOpening(boolean resetOnBookYearOpening) {
+        this.resetOnBookYearOpening = resetOnBookYearOpening;
+    }
+
+    public void setResetEveryYear(boolean resetEveryYear) {
+        this.accountBalancesCache.setResetEveryYear(resetEveryYear);
     }
 
     @Override
@@ -38,7 +54,7 @@ public class AccountBalanceSpliterator implements Spliterator<ATAccountBalance> 
 
             this.emitPeriodBalancesUntil(nextPeriod, action);
 
-            accountBalanceCache.addAmountToBalance(nextPeriod, account, amount);
+            handleNextEntry(nextPeriod, amount, account);
             return true;
         } else {
             if (curPeriodIndex < allPeriods.size()) {
@@ -48,6 +64,43 @@ public class AccountBalanceSpliterator implements Spliterator<ATAccountBalance> 
                 return false;
             }
         }
+    }
+
+    private void handleNextEntry(ATBookPeriod nextPeriod, BigDecimal amount, ATAccount account) {
+        ATPeriodType periodType = nextPeriod.getPeriodType();
+        switch (periodType) {
+            case OPENING:
+                handlePeriodOpeningEntry(nextPeriod, amount, account);
+                break;
+            case GENERAL:
+                accountBalancesCache.addAmountToBalance(nextPeriod, account, amount);
+                break;
+            case CLOSING:
+                handlePeriodClosingEntry(nextPeriod, amount, account);
+                break;
+            default:
+                throw new IllegalArgumentException("Invalid period type: " + periodType);
+        }
+    }
+
+    private void handlePeriodOpeningEntry(ATBookPeriod nextPeriod, BigDecimal amount, ATAccount account) {
+        if (this.ignoreIntermediatePeriodOpeningEntry) {
+            // Only emit balance for the first opening
+            int periodIndex = allPeriods.indexOf(nextPeriod);
+            if (periodIndex != 0) {
+                return;
+            }
+        }
+
+        if (this.resetOnBookYearOpening) {
+            accountBalancesCache.resetBalanceAmount(nextPeriod, account, amount);
+        } else {
+            accountBalancesCache.addAmountToBalance(nextPeriod, account, amount);
+        }
+    }
+
+    private void handlePeriodClosingEntry(ATBookPeriod nextPeriod, BigDecimal amount, ATAccount account) {
+        accountBalancesCache.addAmountToBalance(nextPeriod, account, amount);
     }
 
 
@@ -86,8 +139,9 @@ public class AccountBalanceSpliterator implements Spliterator<ATAccountBalance> 
     private void emitPeriodBalances(Consumer<? super ATAccountBalance> action, int maxIndex) {
         for (int periodIndex = curPeriodIndex; periodIndex < maxIndex; periodIndex++) {
             ATBookPeriod bookPeriod = allPeriods.get(periodIndex);
-            accountBalanceCache.getPeriodBalances(bookPeriod).forEach(action);
+            accountBalancesCache.getPeriodBalances(bookPeriod).forEach(action);
         }
         curPeriodIndex = maxIndex;
     }
+
 }
