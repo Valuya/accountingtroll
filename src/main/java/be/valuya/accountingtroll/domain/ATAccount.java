@@ -1,11 +1,15 @@
 package be.valuya.accountingtroll.domain;
 
 import javax.validation.constraints.NotNull;
+import java.util.Comparator;
 import java.util.Objects;
 import java.util.Optional;
 
 @NotNull
-public class ATAccount {
+public class ATAccount implements Comparable<ATAccount> {
+
+    private final static Comparator<ATAccount> COMPARATOR = Comparator
+            .comparing(ATAccount::getCode);
 
     private String name;
     private String code;
@@ -78,6 +82,8 @@ public class ATAccount {
                 ", code='" + code + '\'' +
                 ", analytics=" + analytics +
                 ", yearlyBalanceReset=" + yearlyBalanceReset +
+                ", title=" + title +
+                ", imputationType=" + imputationType +
                 ", currencyOptional=" + currencyOptional +
                 '}';
     }
@@ -87,16 +93,16 @@ public class ATAccount {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         ATAccount atAccount = (ATAccount) o;
-        return analytics == atAccount.analytics &&
-                yearlyBalanceReset == atAccount.yearlyBalanceReset &&
-                title == atAccount.title &&
-                Objects.equals(code, atAccount.code) &&
-                imputationType == atAccount.imputationType &&
-                Objects.equals(currencyOptional, atAccount.currencyOptional);
+        return Objects.equals(code, atAccount.code);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(code, analytics, yearlyBalanceReset, title, imputationType, currencyOptional);
+        return Objects.hash(code);
+    }
+
+    @Override
+    public int compareTo(ATAccount o) {
+        return COMPARATOR.compare(this, o);
     }
 }
