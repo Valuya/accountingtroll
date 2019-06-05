@@ -10,7 +10,6 @@ import be.valuya.accountingtroll.domain.ATDocument;
 import be.valuya.accountingtroll.domain.ATThirdParty;
 
 import java.io.InputStream;
-import java.nio.file.Path;
 import java.time.LocalDateTime;
 import java.util.Optional;
 import java.util.stream.Stream;
@@ -35,6 +34,6 @@ public interface AccountingManager {
 
     InputStream streamDocumentContent(ATDocument document) throws Exception;
 
-    void uploadDocument(Path documentPath, InputStream documentStream) throws Exception;
+    void uploadDocument(String documentRelativePath, InputStream documentStream) throws Exception;
 
 }
