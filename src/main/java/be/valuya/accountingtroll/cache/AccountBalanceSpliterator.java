@@ -8,6 +8,7 @@ import be.valuya.accountingtroll.domain.ATBookPeriod;
 import be.valuya.accountingtroll.domain.ATPeriodType;
 
 import java.math.BigDecimal;
+import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Spliterator;
@@ -29,6 +30,8 @@ public class AccountBalanceSpliterator implements Spliterator<ATAccountBalance> 
         this.allPeriods = allPeriods;
         this.accountBalancesCache = new AccountBalancesCache(allPeriods);
         this.curPeriodIndex = 0;
+
+        Collections.sort(allPeriods);
     }
 
     public void setIgnoreIntermediatePeriodOpeningEntry(boolean ignoreIntermediatePeriodOpeningEntry) {
