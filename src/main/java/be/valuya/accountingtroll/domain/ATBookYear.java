@@ -16,6 +16,7 @@ public class ATBookYear implements Comparable<ATBookYear> {
     private String name;
     private LocalDate startDate;
     private LocalDate endDate;
+    private boolean archived;
 
     public String getName() {
         return name;
@@ -39,6 +40,14 @@ public class ATBookYear implements Comparable<ATBookYear> {
 
     public void setEndDate(LocalDate endDate) {
         this.endDate = endDate;
+    }
+
+    public boolean isArchived() {
+        return archived;
+    }
+
+    public void setArchived(boolean archived) {
+        this.archived = archived;
     }
 
     @Override
