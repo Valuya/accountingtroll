@@ -26,6 +26,11 @@ public class ATAccountingEntry implements Comparable<ATAccountingEntry> {
      */
     private String dbkCode;
     /**
+     * Type of journal
+     */
+    private AccountingEntryType accountingEntryType;
+
+    /**
      * The document number. This represent the id of the document within a journal/period.
      * Optionally, the doc number may be typed.
      */
@@ -40,8 +45,6 @@ public class ATAccountingEntry implements Comparable<ATAccountingEntry> {
     private int orderingNumber;
     // TODO: remove
     private AccountingEntryDocumentType accountingEntryDocumentType;
-    // TODO: move to account
-    private AccountingEntryType accountingEntryType;
     private ATAccount account;
     /**
      * Each entry should be matched by another, so that the overall balance is zero.
