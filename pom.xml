@@ -6,7 +6,7 @@
 
     <groupId>be.valuya.accountingtroll</groupId>
     <artifactId>accountingtroll</artifactId>
-    <version>1.2.1-SNAPSHOT</version>
+    <version>1.2.2-SNAPSHOT</version>
 
     <name>${project.groupId}:${project.artifactId}</name>
     <description>Abstraction layer for accounting data providers</description>
