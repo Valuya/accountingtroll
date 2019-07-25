@@ -5,9 +5,11 @@ import be.valuya.accountingtroll.domain.ATAccountBalance;
 import be.valuya.accountingtroll.domain.ATBookPeriod;
 
 import java.math.BigDecimal;
+import java.time.LocalDate;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.concurrent.ConcurrentSkipListMap;
 import java.util.stream.Collectors;
 
@@ -31,28 +33,33 @@ class BookPeriodAccountBalanceCache {
                 .collect(Collectors.toList());
     }
 
-    ATAccountBalance appendToBalance(ATAccount account, BigDecimal amount) {
+    ATAccountBalance appendToBalance(ATAccount account, BigDecimal amount, LocalDate operationDate) {
         ATAccountBalance accountBalance = accountBalanceMap.computeIfAbsent(account, this::createEmptyBalance);
         BigDecimal periodEndBalance = accountBalance.getPeriodEndBalance();
         BigDecimal updatedBalance = periodEndBalance.add(amount);
         accountBalance.setPeriodEndBalance(updatedBalance);
+        LocalDate newOperationDate = computeMostRecentOperationDate(operationDate, accountBalance);
+        accountBalance.setLastOperationDate(newOperationDate);
         return accountBalance;
     }
 
-    void setBalance(ATAccount account, BigDecimal amount) {
+
+    void setBalance(ATAccount account, BigDecimal amount, LocalDate operationDate) {
         ATAccountBalance accountBalance = accountBalanceMap.computeIfAbsent(account, this::createEmptyBalance);
         accountBalance.setPeriodStartBalance(amount);
         accountBalance.setPeriodEndBalance(amount);
+        LocalDate newOperationDate = computeMostRecentOperationDate(operationDate, accountBalance);
+        accountBalance.setLastOperationDate(newOperationDate);
     }
 
 
-    ATAccountBalance resetBalance(ATAccount account, BigDecimal amount) {
+    ATAccountBalance resetBalance(ATAccount account, BigDecimal amount, LocalDate operationDate) {
         ATAccountBalance accountBalance = accountBalanceMap.computeIfAbsent(account, this::createEmptyBalance);
         boolean resetted = resettedMap.computeIfAbsent(account, a -> false);
         if (resetted) {
-            appendToBalance(account, amount);
+            appendToBalance(account, amount, operationDate);
         } else {
-            setBalance(account, amount);
+            setBalance(account, amount, operationDate);
             resettedMap.put(account, true);
         }
         return accountBalance;
@@ -60,5 +67,12 @@ class BookPeriodAccountBalanceCache {
 
     private ATAccountBalance createEmptyBalance(ATAccount account) {
         return new ATAccountBalance(account, bookPeriod);
+    }
+
+    private LocalDate computeMostRecentOperationDate(LocalDate operationDate, ATAccountBalance accountBalance) {
+        LocalDate curOperationDateNullable = accountBalance.getLastOperationDate();
+        return Optional.ofNullable(curOperationDateNullable)
+                .filter(prevDate -> prevDate.isAfter(operationDate))
+                .orElse(operationDate);
     }
 }

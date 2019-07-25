@@ -3,6 +3,7 @@ package be.valuya.accountingtroll.domain;
 import be.valuya.accountingtroll.AccountingConstants;
 
 import java.math.BigDecimal;
+import java.time.LocalDate;
 
 public class ATAccountBalance {
 
@@ -10,6 +11,7 @@ public class ATAccountBalance {
     private final ATBookPeriod period;
     private BigDecimal periodStartBalance = AccountingConstants.AMOUNT_ZERO;
     private BigDecimal periodEndBalance = AccountingConstants.AMOUNT_ZERO;
+    private LocalDate lastOperationDate;
 
     public ATAccountBalance(ATAccount account, ATBookPeriod period) {
         this.account = account;
@@ -38,6 +40,14 @@ public class ATAccountBalance {
 
     public void setPeriodEndBalance(BigDecimal periodEndBalance) {
         this.periodEndBalance = periodEndBalance;
+    }
+
+    public LocalDate getLastOperationDate() {
+        return lastOperationDate;
+    }
+
+    public void setLastOperationDate(LocalDate lastOperationDate) {
+        this.lastOperationDate = lastOperationDate;
     }
 
     @Override
