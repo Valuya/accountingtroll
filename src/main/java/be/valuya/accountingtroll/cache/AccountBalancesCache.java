@@ -8,6 +8,7 @@ import be.valuya.accountingtroll.domain.ATBookPeriod;
 import be.valuya.accountingtroll.domain.ATBookYear;
 
 import java.math.BigDecimal;
+import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
 import java.util.SortedMap;
@@ -31,16 +32,16 @@ class AccountBalancesCache {
         return balanceCache.getAllBalances();
     }
 
-    void addAmountToBalance(ATBookPeriod bookPeriod, ATAccount account, BigDecimal amount) {
+    void addAmountToBalance(ATBookPeriod bookPeriod, LocalDate operationDate, ATAccount account, BigDecimal amount) {
         BookPeriodAccountBalanceCache balanceCache = getBalanceCache(bookPeriod);
-        ATAccountBalance updatedBalance = balanceCache.appendToBalance(account, amount);
+        ATAccountBalance updatedBalance = balanceCache.appendToBalance(account, amount, operationDate);
 
         propagateUpdatedBalance(updatedBalance);
     }
 
-    void resetBalanceAmount(ATBookPeriod bookPeriod, ATAccount account, BigDecimal amount) {
+    void resetBalanceAmount(ATBookPeriod bookPeriod, LocalDate operationDate, ATAccount account, BigDecimal amount) {
         BookPeriodAccountBalanceCache balanceCache = getBalanceCache(bookPeriod);
-        ATAccountBalance updatedBalance = balanceCache.resetBalance(account, amount);
+        ATAccountBalance updatedBalance = balanceCache.resetBalance(account, amount, operationDate);
 
         propagateUpdatedBalance(updatedBalance);
     }
@@ -57,6 +58,7 @@ class AccountBalancesCache {
         ATBookPeriod balancePeriod = updatedBalance.getPeriod();
         BigDecimal periodEndBalance = updatedBalance.getPeriodEndBalance();
         ATAccount account = updatedBalance.getAccount();
+        LocalDate lastOperationDate = updatedBalance.getLastOperationDate();
         boolean yearlyBalanceReset = account.isYearlyBalanceReset() || resetEveryYear;
 
         ATBookYear periodBookYear = period.getBookYear();
@@ -71,7 +73,7 @@ class AccountBalancesCache {
         }
 
         BookPeriodAccountBalanceCache balanceCache = getBalanceCache(period);
-        balanceCache.setBalance(account, updatedAmount);
+        balanceCache.setBalance(account, updatedAmount, lastOperationDate);
     }
 
     private void createPeriodCache(ATBookPeriod bookPeriod) {

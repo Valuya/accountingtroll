@@ -8,6 +8,7 @@ import be.valuya.accountingtroll.domain.ATBookPeriod;
 import be.valuya.accountingtroll.domain.ATPeriodType;
 
 import java.math.BigDecimal;
+import java.time.LocalDate;
 import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
@@ -54,10 +55,11 @@ public class AccountBalanceSpliterator implements Spliterator<ATAccountBalance> 
             ATBookPeriod nextPeriod = nextEntry.getBookPeriod();
             BigDecimal amount = nextEntry.getAmount();
             ATAccount account = nextEntry.getAccount();
+            LocalDate operationDate = nextEntry.getDate();
 
             this.emitPeriodBalancesUntil(nextPeriod, action);
 
-            handleNextEntry(nextPeriod, amount, account);
+            handleNextEntry(nextPeriod, operationDate, amount, account);
             return true;
         } else {
             if (curPeriodIndex < allPeriods.size()) {
@@ -69,24 +71,24 @@ public class AccountBalanceSpliterator implements Spliterator<ATAccountBalance> 
         }
     }
 
-    private void handleNextEntry(ATBookPeriod nextPeriod, BigDecimal amount, ATAccount account) {
+    private void handleNextEntry(ATBookPeriod nextPeriod, LocalDate operationDate, BigDecimal amount, ATAccount account) {
         ATPeriodType periodType = nextPeriod.getPeriodType();
         switch (periodType) {
             case OPENING:
-                handlePeriodOpeningEntry(nextPeriod, amount, account);
+                handlePeriodOpeningEntry(nextPeriod, operationDate, amount, account);
                 break;
             case GENERAL:
-                accountBalancesCache.addAmountToBalance(nextPeriod, account, amount);
+                accountBalancesCache.addAmountToBalance(nextPeriod, operationDate, account, amount);
                 break;
             case CLOSING:
-                handlePeriodClosingEntry(nextPeriod, amount, account);
+                handlePeriodClosingEntry(nextPeriod, operationDate, amount, account);
                 break;
             default:
                 throw new IllegalArgumentException("Invalid period type: " + periodType);
         }
     }
 
-    private void handlePeriodOpeningEntry(ATBookPeriod nextPeriod, BigDecimal amount, ATAccount account) {
+    private void handlePeriodOpeningEntry(ATBookPeriod nextPeriod, LocalDate operationDate, BigDecimal amount, ATAccount account) {
         if (this.ignoreIntermediatePeriodOpeningEntry) {
             // Only emit balance for the first opening
             int periodIndex = allPeriods.indexOf(nextPeriod);
@@ -96,14 +98,14 @@ public class AccountBalanceSpliterator implements Spliterator<ATAccountBalance> 
         }
 
         if (this.resetOnBookYearOpening) {
-            accountBalancesCache.resetBalanceAmount(nextPeriod, account, amount);
+            accountBalancesCache.resetBalanceAmount(nextPeriod, operationDate, account, amount);
         } else {
-            accountBalancesCache.addAmountToBalance(nextPeriod, account, amount);
+            accountBalancesCache.addAmountToBalance(nextPeriod, operationDate, account, amount);
         }
     }
 
-    private void handlePeriodClosingEntry(ATBookPeriod nextPeriod, BigDecimal amount, ATAccount account) {
-        accountBalancesCache.addAmountToBalance(nextPeriod, account, amount);
+    private void handlePeriodClosingEntry(ATBookPeriod nextPeriod, LocalDate operationDate, BigDecimal amount, ATAccount account) {
+        accountBalancesCache.addAmountToBalance(nextPeriod, operationDate, account, amount);
     }
 
 
