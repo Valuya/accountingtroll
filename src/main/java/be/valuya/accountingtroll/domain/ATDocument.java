@@ -10,10 +10,12 @@ public class ATDocument {
     private String id;
     private ATBookPeriod bookPeriod;
     private String dbkCode;
-    private String documentNumnber;
+    private String documentNumber;
 
+    private Optional<String> providerReference;
     private Optional<LocalDate> dateOptional = Optional.empty();
     private Optional<Integer> pageCountOptional = Optional.empty();
+    private Optional<Integer> partCountOptional = Optional.empty();
     private Optional<LocalDateTime> creationTimeOptional = Optional.empty();
     private Optional<LocalDateTime> updateTimeOptional = Optional.empty();
 
@@ -41,12 +43,12 @@ public class ATDocument {
         this.dbkCode = dbkCode;
     }
 
-    public String getDocumentNumnber() {
-        return documentNumnber;
+    public String getDocumentNumber() {
+        return documentNumber;
     }
 
-    public void setDocumentNumnber(String documentNumnber) {
-        this.documentNumnber = documentNumnber;
+    public void setDocumentNumber(String documentNumber) {
+        this.documentNumber = documentNumber;
     }
 
     public Optional<LocalDate> getDateOptional() {
@@ -81,6 +83,22 @@ public class ATDocument {
         this.updateTimeOptional = updateTimeOptional;
     }
 
+    public Optional<String> getProviderReference() {
+        return providerReference;
+    }
+
+    public void setProviderReference(Optional<String> providerReference) {
+        this.providerReference = providerReference;
+    }
+
+    public Optional<Integer> getPartCountOptional() {
+        return partCountOptional;
+    }
+
+    public void setPartCountOptional(Optional<Integer> partCountOptional) {
+        this.partCountOptional = partCountOptional;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -89,15 +107,11 @@ public class ATDocument {
         return Objects.equals(id, that.id) &&
                 Objects.equals(bookPeriod, that.bookPeriod) &&
                 Objects.equals(dbkCode, that.dbkCode) &&
-                Objects.equals(documentNumnber, that.documentNumnber) &&
-                Objects.equals(dateOptional, that.dateOptional) &&
-                Objects.equals(pageCountOptional, that.pageCountOptional) &&
-                Objects.equals(creationTimeOptional, that.creationTimeOptional) &&
-                Objects.equals(updateTimeOptional, that.updateTimeOptional);
+                Objects.equals(documentNumber, that.documentNumber);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, bookPeriod, dbkCode, documentNumnber, dateOptional, pageCountOptional, creationTimeOptional, updateTimeOptional);
+        return Objects.hash(id, bookPeriod, dbkCode, documentNumber);
     }
 }
