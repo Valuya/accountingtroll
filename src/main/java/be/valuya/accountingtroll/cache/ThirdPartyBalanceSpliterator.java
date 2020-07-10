@@ -6,6 +6,7 @@ import be.valuya.accountingtroll.domain.ATBookPeriod;
 import be.valuya.accountingtroll.domain.ATPeriodType;
 import be.valuya.accountingtroll.domain.ATThirdParty;
 import be.valuya.accountingtroll.domain.ATThirdPartyBalance;
+import be.valuya.accountingtroll.domain.AccountingEntryDocumentType;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
@@ -44,10 +45,6 @@ public class ThirdPartyBalanceSpliterator implements Spliterator<ATThirdPartyBal
         this.resetOnBookYearOpening = resetOnBookYearOpening;
     }
 
-    public void setResetEveryYear(boolean resetEveryYear) {
-        this.thirdPartyBalanceCache.setResetEveryYear(resetEveryYear);
-    }
-
     @Override
     public boolean tryAdvance(Consumer<? super ATThirdPartyBalance> action) {
         boolean hasNextEntry = accountingEntriesIterator.hasNext();
@@ -58,11 +55,18 @@ public class ThirdPartyBalanceSpliterator implements Spliterator<ATThirdPartyBal
             Optional<ATThirdParty> thirdPartyOptional = nextEntry.getThirdPartyOptional();
             LocalDate operationDate = nextEntry.getDate();
 
-            this.emitPeriodBalancesUntil(nextPeriod, action);
+            boolean relevantDocumentType = nextEntry.getAccountingEntryDocumentTypeOptional()
+                    .map(this::isDocumentTypeImputedOnThirdParty)
+                    .orElse(false);
+            boolean openingPeriod = nextPeriod.getPeriodType() == ATPeriodType.OPENING;
+            boolean relevantEntry = relevantDocumentType || openingPeriod;
+            boolean hasThirdParty = thirdPartyOptional.isPresent();
 
-            thirdPartyOptional.ifPresent(
-                    atThirdParty -> handleNextEntry(nextPeriod, operationDate, amount, atThirdParty)
-            );
+            this.emitPeriodBalancesUntil(nextPeriod, action);
+            if (hasThirdParty && relevantEntry) {
+                ATThirdParty atThirdParty = thirdPartyOptional.get();
+                handleNextEntry(nextPeriod, operationDate, amount, atThirdParty);
+            }
 
             return true;
         } else {
@@ -72,6 +76,16 @@ public class ThirdPartyBalanceSpliterator implements Spliterator<ATThirdPartyBal
             } else {
                 return false;
             }
+        }
+    }
+
+    private boolean isDocumentTypeImputedOnThirdParty(AccountingEntryDocumentType documentType) {
+        switch (documentType) {
+            case CUSTOMER_ACCOUNT_ALLOCATION:
+            case SUPPLIER_ACCOUNT_ALLOCATION:
+                return true;
+            default:
+                return false;
         }
     }
 

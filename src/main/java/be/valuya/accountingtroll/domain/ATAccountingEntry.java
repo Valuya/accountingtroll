@@ -9,42 +9,49 @@ import java.util.Optional;
 @NotNull
 public class ATAccountingEntry implements Comparable<ATAccountingEntry> {
 
-    private final static Comparator<ATAccountingEntry> COMPARATOR = Comparator
-            .comparing(ATAccountingEntry::getBookPeriod)
-            .thenComparing(ATAccountingEntry::getDate)
-            .thenComparing(ATAccountingEntry::getDocNumber);
+    private final static Comparator<ATAccountingEntry> COMPARATOR = Comparator.nullsLast(
+            Comparator.<ATAccountingEntry, ATBookPeriod>comparing(e -> e.getBookPeriodOptional().orElse(null))
+                    .thenComparing(e -> e.getDateOptional().orElse(null))
+                    .thenComparing(e -> e.getDocNumberOptional().orElse(null))
+    );
 
+    @NotNull
     private ATBookPeriod bookPeriod;
+    @NotNull
     private LocalDate date;
     /**
      * Entry amount. Positive values for a 'credit' entry, negative values for a 'debit' entry, regardless
      * of the account type.
      */
+    @NotNull
     private BigDecimal amount;
     /**
      * The journal code.
      */
+    @NotNull
     private String dbkCode;
     /**
      * Type of journal
      */
+    @NotNull
     private AccountingEntryType accountingEntryType;
 
     /**
      * The document number. This represent the id of the document within a journal/period.
      * Optionally, the doc number may be typed.
      */
+    @NotNull
     private String docNumber;
     /**
      * An optional type for the docNumber
      */
-    private Optional<AccountingEntryDocumentNumberType> docNumberTypeOptional = Optional.empty();
+    private AccountingEntryDocumentNumberType docNumberType;
     /**
      * An index to order entries
      */
     private int orderingNumber;
-    // TODO: remove
     private AccountingEntryDocumentType accountingEntryDocumentType;
+    @NotNull
     private ATAccount account;
     /**
      * Each entry should be matched by another, so that the overall balance is zero.
@@ -55,139 +62,175 @@ public class ATAccountingEntry implements Comparable<ATAccountingEntry> {
     /**
      * The document from which this entry was derived.
      */
-    private Optional<ATDocument> documentOptional = Optional.empty();
-    private Optional<ATTax> taxOptional = Optional.empty();
-    private Optional<ATThirdParty> thirdPartyOptional = Optional.empty();
-    private Optional<LocalDate> documentDateOptional = Optional.empty();
-    private Optional<LocalDate> dueDateOptional = Optional.empty();
-    private Optional<String> commentOptional = Optional.empty();
-    private Optional<ATAccountingEntry> matchedEntry = Optional.empty();
+    private ATDocument document;
+    private ATTax tax;
+    private ATThirdParty thirdParty;
+    private LocalDate documentDate;
+    private LocalDate dueDate;
+    private String comment;
+    private ATAccountingEntry matchedEntry;
 
     public ATBookPeriod getBookPeriod() {
         return bookPeriod;
-    }
-
-    public void setBookPeriod(ATBookPeriod bookPeriod) {
-        this.bookPeriod = bookPeriod;
     }
 
     public LocalDate getDate() {
         return date;
     }
 
-    public void setDate(LocalDate date) {
-        this.date = date;
-    }
-
     public BigDecimal getAmount() {
         return amount;
-    }
-
-    public void setAmount(BigDecimal amount) {
-        this.amount = amount;
     }
 
     public String getDbkCode() {
         return dbkCode;
     }
 
-    public void setDbkCode(String dbkCode) {
-        this.dbkCode = dbkCode;
-    }
-
-    public Optional<ATThirdParty> getThirdPartyOptional() {
-        return thirdPartyOptional;
-    }
-
-    public void setThirdPartyOptional(Optional<ATThirdParty> thirdPartyOptional) {
-        this.thirdPartyOptional = thirdPartyOptional;
-    }
-
-    public Optional<LocalDate> getDocumentDateOptional() {
-        return documentDateOptional;
-    }
-
-    public void setDocumentDateOptional(Optional<LocalDate> documentDateOptional) {
-        this.documentDateOptional = documentDateOptional;
-    }
-
-    public Optional<ATTax> getTaxOptional() {
-        return taxOptional;
-    }
-
-    public void setTaxOptional(Optional<ATTax> taxOptional) {
-        this.taxOptional = taxOptional;
-    }
-
-    public Optional<LocalDate> getDueDateOptional() {
-        return dueDateOptional;
-    }
-
-    public void setDueDateOptional(Optional<LocalDate> dueDateOptional) {
-        this.dueDateOptional = dueDateOptional;
-    }
-
-    public Optional<String> getCommentOptional() {
-        return commentOptional;
-    }
-
-    public void setCommentOptional(Optional<String> commentOptional) {
-        this.commentOptional = commentOptional;
-    }
-
-    public AccountingEntryDocumentType getAccountingEntryDocumentType() {
-        return accountingEntryDocumentType;
-    }
-
-    public void setAccountingEntryDocumentType(AccountingEntryDocumentType accountingEntryDocumentType) {
-        this.accountingEntryDocumentType = accountingEntryDocumentType;
-    }
-
     public AccountingEntryType getAccountingEntryType() {
         return accountingEntryType;
-    }
-
-    public void setAccountingEntryType(AccountingEntryType accountingEntryType) {
-        this.accountingEntryType = accountingEntryType;
-    }
-
-    public Optional<ATDocument> getDocumentOptional() {
-        return documentOptional;
-    }
-
-    public void setDocumentOptional(Optional<ATDocument> documentOptional) {
-        this.documentOptional = documentOptional;
-    }
-
-    public boolean isMatched() {
-        return matched;
-    }
-
-    public void setMatched(boolean matched) {
-        this.matched = matched;
     }
 
     public String getDocNumber() {
         return docNumber;
     }
 
+    public ATAccount getAccount() {
+        return account;
+    }
+
+    public Optional<ATBookPeriod> getBookPeriodOptional() {
+        return Optional.ofNullable(bookPeriod);
+    }
+
+    public void setBookPeriod(ATBookPeriod bookPeriod) {
+        this.bookPeriod = bookPeriod;
+    }
+
+    public Optional<LocalDate> getDateOptional() {
+        return Optional.ofNullable(date);
+    }
+
+    public void setDate(LocalDate date) {
+        this.date = date;
+    }
+
+    public Optional<BigDecimal> getAmountOptional() {
+        return Optional.ofNullable(amount);
+    }
+
+    public void setAmount(BigDecimal amount) {
+        this.amount = amount;
+    }
+
+    public Optional<String> getDbkCodeOptional() {
+        return Optional.ofNullable(dbkCode);
+    }
+
+    public void setDbkCode(String dbkCode) {
+        this.dbkCode = dbkCode;
+    }
+
+    public Optional<AccountingEntryType> getAccountingEntryTypeOptional() {
+        return Optional.ofNullable(accountingEntryType);
+    }
+
+    public void setAccountingEntryType(AccountingEntryType accountingEntryType) {
+        this.accountingEntryType = accountingEntryType;
+    }
+
+    public Optional<String> getDocNumberOptional() {
+        return Optional.ofNullable(docNumber);
+    }
+
     public void setDocNumber(String docNumber) {
         this.docNumber = docNumber;
     }
 
-    public ATAccount getAccount() {
-        return account;
+    public Optional<AccountingEntryDocumentNumberType> getDocNumberTypeOptional() {
+        return Optional.ofNullable(docNumberType);
+    }
+
+    public void setDocNumberType(AccountingEntryDocumentNumberType docNumberType) {
+        this.docNumberType = docNumberType;
+    }
+
+    public void setOrderingNumber(int orderingNumber) {
+        this.orderingNumber = orderingNumber;
+    }
+
+    public Optional<AccountingEntryDocumentType> getAccountingEntryDocumentTypeOptional() {
+        return Optional.ofNullable(accountingEntryDocumentType);
+    }
+
+    public void setAccountingEntryDocumentType(AccountingEntryDocumentType accountingEntryDocumentType) {
+        this.accountingEntryDocumentType = accountingEntryDocumentType;
+    }
+
+    public Optional<ATAccount> getAccountOptional() {
+        return Optional.ofNullable(account);
     }
 
     public void setAccount(ATAccount account) {
         this.account = account;
     }
 
-    public Optional<ATAccountingEntry> getMatchedEntry() {
-        return matchedEntry;
+    public void setMatched(boolean matched) {
+        this.matched = matched;
     }
 
-    public void setMatchedEntry(Optional<ATAccountingEntry> matchedEntry) {
+    public Optional<ATDocument> getDocumentOptional() {
+        return Optional.ofNullable(document);
+    }
+
+    public void setDocument(ATDocument document) {
+        this.document = document;
+    }
+
+    public Optional<ATTax> getTaxOptional() {
+        return Optional.ofNullable(tax);
+    }
+
+    public void setTax(ATTax tax) {
+        this.tax = tax;
+    }
+
+    public Optional<ATThirdParty> getThirdPartyOptional() {
+        return Optional.ofNullable(thirdParty);
+    }
+
+    public void setThirdParty(ATThirdParty thirdParty) {
+        this.thirdParty = thirdParty;
+    }
+
+    public Optional<LocalDate> getDocumentDateOptional() {
+        return Optional.ofNullable(documentDate);
+    }
+
+    public void setDocumentDate(LocalDate documentDate) {
+        this.documentDate = documentDate;
+    }
+
+    public Optional<LocalDate> getDueDateOptional() {
+        return Optional.ofNullable(dueDate);
+    }
+
+    public void setDueDate(LocalDate dueDate) {
+        this.dueDate = dueDate;
+    }
+
+    public Optional<String> getCommentOptional() {
+        return Optional.ofNullable(comment);
+    }
+
+    public void setComment(String comment) {
+        this.comment = comment;
+    }
+
+    public Optional<ATAccountingEntry> getMatchedEntryOptional() {
+        return Optional.ofNullable(matchedEntry);
+    }
+
+    public void setMatchedEntry(ATAccountingEntry matchedEntry) {
         this.matchedEntry = matchedEntry;
     }
 
@@ -195,16 +238,8 @@ public class ATAccountingEntry implements Comparable<ATAccountingEntry> {
         return orderingNumber;
     }
 
-    public void setOrderingNumber(int orderingNumber) {
-        this.orderingNumber = orderingNumber;
-    }
-
-    public Optional<AccountingEntryDocumentNumberType> getDocNumberTypeOptional() {
-        return docNumberTypeOptional;
-    }
-
-    public void setDocNumberTypeOptional(Optional<AccountingEntryDocumentNumberType> docNumberTypeOptional) {
-        this.docNumberTypeOptional = docNumberTypeOptional;
+    public boolean isMatched() {
+        return matched;
     }
 
     @Override

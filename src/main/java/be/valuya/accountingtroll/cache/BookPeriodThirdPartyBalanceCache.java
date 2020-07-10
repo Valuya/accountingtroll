@@ -1,8 +1,8 @@
 package be.valuya.accountingtroll.cache;
 
+import be.valuya.accountingtroll.domain.ATBookPeriod;
 import be.valuya.accountingtroll.domain.ATThirdParty;
 import be.valuya.accountingtroll.domain.ATThirdPartyBalance;
-import be.valuya.accountingtroll.domain.ATBookPeriod;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
@@ -33,8 +33,8 @@ class BookPeriodThirdPartyBalanceCache {
                 .collect(Collectors.toList());
     }
 
-    ATThirdPartyBalance appendToBalance(ATThirdParty account, BigDecimal amount, LocalDate operationDate) {
-        ATThirdPartyBalance thirdPartyBalance = thirdPartyBalanceMap.computeIfAbsent(account, this::createEmptyBalance);
+    ATThirdPartyBalance appendToBalance(ATThirdParty thirdParty, BigDecimal amount, LocalDate operationDate) {
+        ATThirdPartyBalance thirdPartyBalance = thirdPartyBalanceMap.computeIfAbsent(thirdParty, this::createEmptyBalance);
         BigDecimal periodEndBalance = thirdPartyBalance.getPeriodEndBalance();
         BigDecimal updatedBalance = periodEndBalance.add(amount);
         thirdPartyBalance.setPeriodEndBalance(updatedBalance);
@@ -44,8 +44,8 @@ class BookPeriodThirdPartyBalanceCache {
     }
 
 
-    void setBalance(ATThirdParty account, BigDecimal amount, LocalDate operationDate) {
-        ATThirdPartyBalance thirdPartyBalance = thirdPartyBalanceMap.computeIfAbsent(account, this::createEmptyBalance);
+    void setBalance(ATThirdParty thirdParty, BigDecimal amount, LocalDate operationDate) {
+        ATThirdPartyBalance thirdPartyBalance = thirdPartyBalanceMap.computeIfAbsent(thirdParty, this::createEmptyBalance);
         thirdPartyBalance.setPeriodStartBalance(amount);
         thirdPartyBalance.setPeriodEndBalance(amount);
         LocalDate newOperationDate = computeMostRecentOperationDate(operationDate, thirdPartyBalance);
@@ -53,20 +53,20 @@ class BookPeriodThirdPartyBalanceCache {
     }
 
 
-    ATThirdPartyBalance resetBalance(ATThirdParty account, BigDecimal amount, LocalDate operationDate) {
-        ATThirdPartyBalance thirdPartyBalance = thirdPartyBalanceMap.computeIfAbsent(account, this::createEmptyBalance);
-        boolean resetted = resettedMap.computeIfAbsent(account, a -> false);
+    ATThirdPartyBalance resetBalance(ATThirdParty thirdParty, BigDecimal amount, LocalDate operationDate) {
+        ATThirdPartyBalance thirdPartyBalance = thirdPartyBalanceMap.computeIfAbsent(thirdParty, this::createEmptyBalance);
+        boolean resetted = resettedMap.computeIfAbsent(thirdParty, a -> false);
         if (resetted) {
-            appendToBalance(account, amount, operationDate);
+            appendToBalance(thirdParty, amount, operationDate);
         } else {
-            setBalance(account, amount, operationDate);
-            resettedMap.put(account, true);
+            setBalance(thirdParty, amount, operationDate);
+            resettedMap.put(thirdParty, true);
         }
         return thirdPartyBalance;
     }
 
-    private ATThirdPartyBalance createEmptyBalance(ATThirdParty account) {
-        return new ATThirdPartyBalance(account, bookPeriod);
+    private ATThirdPartyBalance createEmptyBalance(ATThirdParty thirdParty) {
+        return new ATThirdPartyBalance(thirdParty, bookPeriod);
     }
 
     private LocalDate computeMostRecentOperationDate(LocalDate operationDate, ATThirdPartyBalance thirdPartyBalance) {

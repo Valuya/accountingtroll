@@ -3,17 +3,21 @@ package be.valuya.accountingtroll.event;
 import be.valuya.accountingtroll.domain.ATAccount;
 import be.valuya.accountingtroll.domain.ATAccountingEntry;
 
+import javax.validation.constraints.NotNull;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.Optional;
 
 public class AccountBalanceChangeEvent {
 
+    @NotNull
     private ATAccount account;
+    @NotNull
     private BigDecimal newBalance;
+    @NotNull
     private LocalDate date;
 
-    private Optional<ATAccountingEntry> accountingEntryOptional = Optional.empty(); //
+    private ATAccountingEntry accountingEntry;
 
     public ATAccount getAccount() {
         return account;
@@ -21,14 +25,6 @@ public class AccountBalanceChangeEvent {
 
     public void setAccount(ATAccount account) {
         this.account = account;
-    }
-
-    public Optional<ATAccountingEntry> getAccountingEntryOptional() {
-        return accountingEntryOptional;
-    }
-
-    public void setAccountingEntryOptional(Optional<ATAccountingEntry> accountingEntryOptional) {
-        this.accountingEntryOptional = accountingEntryOptional;
     }
 
     public BigDecimal getNewBalance() {
@@ -47,13 +43,33 @@ public class AccountBalanceChangeEvent {
         this.date = date;
     }
 
+    public ATAccountingEntry getAccountingEntry() {
+        return accountingEntry;
+    }
+
+    public Optional<ATAccount> getAccountOptional() {
+        return Optional.ofNullable(account);
+    }
+
+    public Optional<BigDecimal> getNewBalanceOptional() {
+        return Optional.ofNullable(newBalance);
+    }
+
+    public Optional<LocalDate> getDateOptional() {
+        return Optional.ofNullable(date);
+    }
+
+    public Optional<ATAccountingEntry> getAccountingEntryOptional() {
+        return Optional.ofNullable(accountingEntry);
+    }
+
     @Override
     public String toString() {
         return "AccountBalanceChangeEvent{" +
                 "account=" + account +
                 ", newBalance=" + newBalance +
                 ", date=" + date +
-                ", accountingEntryOptional=" + accountingEntryOptional +
+                ", accountingEntry=" + accountingEntry +
                 '}';
     }
 }

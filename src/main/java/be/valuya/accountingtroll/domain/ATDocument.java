@@ -1,5 +1,6 @@
 package be.valuya.accountingtroll.domain;
 
+import javax.validation.constraints.NotNull;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.Objects;
@@ -7,96 +8,116 @@ import java.util.Optional;
 
 public class ATDocument {
 
+    @NotNull
     private String id;
+    @NotNull
     private ATBookPeriod bookPeriod;
-    private String dbkCode;
+    @NotNull
     private String documentNumber;
+    @NotNull
+    private String dbkCode;
 
-    private Optional<String> providerReference;
-    private Optional<LocalDate> dateOptional = Optional.empty();
-    private Optional<Integer> pageCountOptional = Optional.empty();
-    private Optional<Integer> partCountOptional = Optional.empty();
-    private Optional<LocalDateTime> creationTimeOptional = Optional.empty();
-    private Optional<LocalDateTime> updateTimeOptional = Optional.empty();
+    private String providerReference;
+    private LocalDate date;
+    private Integer pageCount;
+    private Integer partCount;
+    private LocalDateTime creationTime;
+    private LocalDateTime updateTime;
 
     public String getId() {
         return id;
-    }
-
-    public void setId(String id) {
-        this.id = id;
     }
 
     public ATBookPeriod getBookPeriod() {
         return bookPeriod;
     }
 
-    public void setBookPeriod(ATBookPeriod bookPeriod) {
-        this.bookPeriod = bookPeriod;
+    public String getDocumentNumber() {
+        return documentNumber;
     }
 
     public String getDbkCode() {
         return dbkCode;
     }
 
-    public void setDbkCode(String dbkCode) {
-        this.dbkCode = dbkCode;
+    public Optional<String> getIdOptional() {
+        return Optional.ofNullable(id);
     }
 
-    public String getDocumentNumber() {
-        return documentNumber;
+    public void setId(String id) {
+        this.id = id;
+    }
+
+    public Optional<ATBookPeriod> getBookPeriodOptional() {
+        return Optional.ofNullable(bookPeriod);
+    }
+
+    public void setBookPeriod(ATBookPeriod bookPeriod) {
+        this.bookPeriod = bookPeriod;
+    }
+
+    public Optional<String> getDocumentNumberOptional() {
+        return Optional.ofNullable(documentNumber);
     }
 
     public void setDocumentNumber(String documentNumber) {
         this.documentNumber = documentNumber;
     }
 
-    public Optional<LocalDate> getDateOptional() {
-        return dateOptional;
+    public Optional<String> getDbkCodeOptional() {
+        return Optional.ofNullable(dbkCode);
     }
 
-    public void setDateOptional(Optional<LocalDate> dateOptional) {
-        this.dateOptional = dateOptional;
+    public void setDbkCode(String dbkCode) {
+        this.dbkCode = dbkCode;
     }
 
-    public Optional<Integer> getPageCountOptional() {
-        return pageCountOptional;
+    public Optional<String> getProviderReferenceOptional() {
+        return Optional.ofNullable(providerReference);
     }
 
-    public void setPageCountOptional(Optional<Integer> pageCountOptional) {
-        this.pageCountOptional = pageCountOptional;
-    }
-
-    public Optional<LocalDateTime> getCreationTimeOptional() {
-        return creationTimeOptional;
-    }
-
-    public void setCreationTimeOptional(Optional<LocalDateTime> creationTimeOptional) {
-        this.creationTimeOptional = creationTimeOptional;
-    }
-
-    public Optional<LocalDateTime> getUpdateTimeOptional() {
-        return updateTimeOptional;
-    }
-
-    public void setUpdateTimeOptional(Optional<LocalDateTime> updateTimeOptional) {
-        this.updateTimeOptional = updateTimeOptional;
-    }
-
-    public Optional<String> getProviderReference() {
-        return providerReference;
-    }
-
-    public void setProviderReference(Optional<String> providerReference) {
+    public void setProviderReference(String providerReference) {
         this.providerReference = providerReference;
     }
 
-    public Optional<Integer> getPartCountOptional() {
-        return partCountOptional;
+    public Optional<LocalDate> getDateOptional() {
+        return Optional.ofNullable(date);
     }
 
-    public void setPartCountOptional(Optional<Integer> partCountOptional) {
-        this.partCountOptional = partCountOptional;
+    public void setDate(LocalDate date) {
+        this.date = date;
+    }
+
+    public Optional<Integer> getPageCountOptional() {
+        return Optional.ofNullable(pageCount);
+    }
+
+    public void setPageCount(Integer pageCount) {
+        this.pageCount = pageCount;
+    }
+
+    public Optional<Integer> getPartCountOptional() {
+        return Optional.ofNullable(partCount);
+    }
+
+    public void setPartCount(Integer partCount) {
+        this.partCount = partCount;
+    }
+
+    public Optional<LocalDateTime> getCreationTimeOptional() {
+        return Optional.ofNullable(creationTime);
+    }
+
+    public void setCreationTime(LocalDateTime creationTime) {
+        this.creationTime = creationTime;
+    }
+
+    public Optional<LocalDateTime> getUpdateTimeOptional() {
+        return Optional.ofNullable(updateTime);
+    }
+
+    public void setUpdateTime(LocalDateTime updateTime) {
+        this.updateTime = updateTime;
     }
 
     @Override

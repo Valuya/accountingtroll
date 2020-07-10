@@ -3,13 +3,12 @@ package be.valuya.accountingtroll.domain;
 import javax.annotation.Nullable;
 import javax.validation.constraints.NotNull;
 import java.util.Comparator;
+import java.util.Objects;
 import java.util.Optional;
 
 public class ATThirdParty implements Comparable<ATThirdParty> {
 
-    private final static Comparator<ATThirdParty> COMPARATOR = Comparator.nullsLast(
-            Comparator.<ATThirdParty, ATThirdPartyType>comparing(t -> t.getTypeOptional().orElse(null))
-                    .thenComparing(t -> t.getFullNameOptional().orElse(null)));
+    private final static Comparator<ATThirdParty> COMPARATOR = Comparator.nullsLast(Comparator.comparing(ATThirdParty::getId));
 
     @NotNull
     private String id;
@@ -135,5 +134,18 @@ public class ATThirdParty implements Comparable<ATThirdParty> {
     @Override
     public int compareTo(ATThirdParty atThirdParty) {
         return COMPARATOR.compare(this, atThirdParty);
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        ATThirdParty that = (ATThirdParty) o;
+        return Objects.equals(id, that.id);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id);
     }
 }

@@ -15,14 +15,9 @@ import java.util.concurrent.ConcurrentSkipListMap;
 class ThirdPartyBalanceCache {
 
     private SortedMap<ATBookPeriod, BookPeriodThirdPartyBalanceCache> periodBalances = new ConcurrentSkipListMap<>();
-    private boolean resetEveryYear;
 
     ThirdPartyBalanceCache(List<ATBookPeriod> allPeriods) {
         allPeriods.forEach(this::createPeriodCache);
-    }
-
-    void setResetEveryYear(boolean resetEveryYear) {
-        this.resetEveryYear = resetEveryYear;
     }
 
     List<ATThirdPartyBalance> getPeriodBalances(ATBookPeriod bookPeriod) {
