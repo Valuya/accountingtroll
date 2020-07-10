@@ -5,7 +5,7 @@ import be.valuya.accountingtroll.AccountingEventListener;
 public class AccountingEventHandler implements AccountingEventListener {
 
     @Override
-    public void handleBalanceChangeEvent(BalanceChangeEvent balanceChangeEvent) {
+    public void handleBalanceChangeEvent(AccountBalanceChangeEvent accountBalanceChangeEvent) {
     }
 
     @Override

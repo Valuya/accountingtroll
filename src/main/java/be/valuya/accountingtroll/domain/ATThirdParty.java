@@ -2,9 +2,14 @@ package be.valuya.accountingtroll.domain;
 
 import javax.annotation.Nullable;
 import javax.validation.constraints.NotNull;
+import java.util.Comparator;
 import java.util.Optional;
 
-public class ATThirdParty {
+public class ATThirdParty implements Comparable<ATThirdParty> {
+
+    private final static Comparator<ATThirdParty> COMPARATOR = Comparator.nullsLast(
+            Comparator.<ATThirdParty, ATThirdPartyType>comparing(t -> t.getTypeOptional().orElse(null))
+                    .thenComparing(t -> t.getFullNameOptional().orElse(null)));
 
     @NotNull
     private String id;
@@ -127,4 +132,8 @@ public class ATThirdParty {
                 '}';
     }
 
+    @Override
+    public int compareTo(ATThirdParty atThirdParty) {
+        return COMPARATOR.compare(this, atThirdParty);
+    }
 }
