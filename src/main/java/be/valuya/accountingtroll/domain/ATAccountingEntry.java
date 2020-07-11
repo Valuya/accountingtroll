@@ -250,8 +250,12 @@ public class ATAccountingEntry implements Comparable<ATAccountingEntry> {
                 ", amount=" + amount +
                 ", dbkCode='" + dbkCode + '\'' +
                 ", accountingEntryType=" + accountingEntryType +
+                ", docNumber='" + docNumber + '\'' +
+                ", docNumberType=" + docNumberType +
+                ", accountingEntryDocumentType=" + accountingEntryDocumentType +
                 ", account=" + account +
-                ", docNumber=" + docNumber +
+                ", matched=" + matched +
+                ", thirdParty=" + thirdParty +
                 '}';
     }
 

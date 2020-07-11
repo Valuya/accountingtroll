@@ -58,12 +58,10 @@ public class ThirdPartyBalanceSpliterator implements Spliterator<ATThirdPartyBal
             boolean relevantDocumentType = nextEntry.getAccountingEntryDocumentTypeOptional()
                     .map(this::isDocumentTypeImputedOnThirdParty)
                     .orElse(false);
-            boolean openingPeriod = nextPeriod.getPeriodType() == ATPeriodType.OPENING;
-            boolean relevantEntry = relevantDocumentType || openingPeriod;
             boolean hasThirdParty = thirdPartyOptional.isPresent();
 
             this.emitPeriodBalancesUntil(nextPeriod, action);
-            if (hasThirdParty && relevantEntry) {
+            if (hasThirdParty && relevantDocumentType) {
                 ATThirdParty atThirdParty = thirdPartyOptional.get();
                 handleNextEntry(nextPeriod, operationDate, amount, atThirdParty);
             }
