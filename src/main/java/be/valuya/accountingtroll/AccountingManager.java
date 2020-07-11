@@ -8,6 +8,7 @@ import be.valuya.accountingtroll.domain.ATBookPeriod;
 import be.valuya.accountingtroll.domain.ATBookYear;
 import be.valuya.accountingtroll.domain.ATDocument;
 import be.valuya.accountingtroll.domain.ATThirdParty;
+import be.valuya.accountingtroll.domain.ATThirdPartyBalance;
 
 import java.io.InputStream;
 import java.time.LocalDateTime;
@@ -25,6 +26,8 @@ public interface AccountingManager {
     Stream<ATBookPeriod> streamPeriods();
 
     Stream<ATThirdParty> streamThirdParties();
+
+    Stream<ATThirdPartyBalance> streamThirdPartyBalances();
 
     Stream<ATAccountingEntry> streamAccountingEntries();
 

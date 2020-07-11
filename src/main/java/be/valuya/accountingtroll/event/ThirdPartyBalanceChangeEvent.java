@@ -1,34 +1,34 @@
 package be.valuya.accountingtroll.event;
 
-import be.valuya.accountingtroll.domain.ATAccount;
 import be.valuya.accountingtroll.domain.ATAccountingEntry;
+import be.valuya.accountingtroll.domain.ATThirdParty;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.Optional;
 
-public class BalanceChangeEvent {
+public class ThirdPartyBalanceChangeEvent {
 
-    private ATAccount account;
+    private ATThirdParty thirdParty;
     private BigDecimal newBalance;
     private LocalDate date;
 
-    private Optional<ATAccountingEntry> accountingEntryOptional = Optional.empty(); //
+    private ATAccountingEntry accountingEntry;
 
-    public ATAccount getAccount() {
-        return account;
+    public ATThirdParty getThirdParty() {
+        return thirdParty;
     }
 
-    public void setAccount(ATAccount account) {
-        this.account = account;
+    public void setThirdParty(ATThirdParty thirdParty) {
+        this.thirdParty = thirdParty;
     }
 
     public Optional<ATAccountingEntry> getAccountingEntryOptional() {
-        return accountingEntryOptional;
+        return Optional.ofNullable(accountingEntry);
     }
 
-    public void setAccountingEntryOptional(Optional<ATAccountingEntry> accountingEntryOptional) {
-        this.accountingEntryOptional = accountingEntryOptional;
+    public void setAccountingEntryOptional(ATAccountingEntry accountingEntry) {
+        this.accountingEntry = accountingEntry;
     }
 
     public BigDecimal getNewBalance() {
@@ -49,11 +49,11 @@ public class BalanceChangeEvent {
 
     @Override
     public String toString() {
-        return "BalanceChangeEvent{" +
-                "account=" + account +
+        return "ThirdPartyBalanceChangeEvent{" +
+                "thirdParty=" + thirdParty +
                 ", newBalance=" + newBalance +
                 ", date=" + date +
-                ", accountingEntryOptional=" + accountingEntryOptional +
+                ", accountingEntry=" + accountingEntry +
                 '}';
     }
 }

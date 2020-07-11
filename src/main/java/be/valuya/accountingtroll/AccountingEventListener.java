@@ -2,11 +2,14 @@ package be.valuya.accountingtroll;
 
 import be.valuya.accountingtroll.event.ArchiveFileNotFoundIgnoredEvent;
 import be.valuya.accountingtroll.event.ArchiveFolderNotFoundIgnoredEvent;
-import be.valuya.accountingtroll.event.BalanceChangeEvent;
+import be.valuya.accountingtroll.event.AccountBalanceChangeEvent;
+import be.valuya.accountingtroll.event.ThirdPartyBalanceChangeEvent;
 
 public interface AccountingEventListener {
 
-    void handleBalanceChangeEvent(BalanceChangeEvent balanceChangeEvent);
+    void handleAccountBalanceChangeEvent(AccountBalanceChangeEvent accountBalanceChangeEvent);
+
+    void handleThirdPartyBalanceChangeEvent(ThirdPartyBalanceChangeEvent thirdPartyBalanceChangeEvent);
 
     void handleArchiveFileNotFoundIgnoredEvent(ArchiveFileNotFoundIgnoredEvent ignoredEvent);
 
