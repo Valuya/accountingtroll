@@ -18,6 +18,7 @@ public class ATDocument {
     private String dbkCode;
 
     private String providerReference;
+    private String absolutePath;
     private LocalDate date;
     private Integer pageCount;
     private Integer partCount;
@@ -118,6 +119,14 @@ public class ATDocument {
 
     public void setUpdateTime(LocalDateTime updateTime) {
         this.updateTime = updateTime;
+    }
+
+    public String getAbsolutePath() {
+        return absolutePath;
+    }
+
+    public void setAbsolutePath(String absolutePath) {
+        this.absolutePath = absolutePath;
     }
 
     @Override
