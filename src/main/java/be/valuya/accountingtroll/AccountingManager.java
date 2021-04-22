@@ -17,6 +17,8 @@ import java.util.stream.Stream;
 
 public interface AccountingManager {
 
+    ATThirdParty getSubjectThirdParty();
+
     Optional<LocalDateTime> getLastAccountModificationTime();
 
     Stream<ATAccount> streamAccounts();
