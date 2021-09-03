@@ -41,7 +41,7 @@ pipeline {
                     if (params.ALT_DEPLOYMENT_REPOSITORY != '') {
                         env.MVN_ARGS="${env.MVN_ARGS} -DaltDeploymentRepository=${params.ALT_DEPLOYMENT_REPOSITORY}"
                     }
-                    if (env.BRANCH_NAME == 'master' || parms.FORCE_DEPLOY == true) {
+                    if (env.BRANCH_NAME == 'master' || params.FORCE_DEPLOY == true) {
                         env.MVN_ARGS="${env.MVN_ARGS} -Possrh-deploy"
                     }
                 }
