@@ -24,7 +24,7 @@ pipeline {
                 }
                 withCredentials([file(credentialsId: "${params.GPG_KEY_CREDENTIAL_ID}", variable: 'GPGKEY')]) {
                     sh 'gpg --allow-secret-key-import --import $GPGKEY'
-                    sh "echo \"${params.GPG_KEY_FINGERPRINT}:6:\" | gpg --import-ownertrust"
+                    sh 'echo "${params.GPG_KEY_FINGERPRINT}:6:" | gpg --import-ownertrust'
                 }
                 withMaven(maven: 'maven', mavenSettingsConfig: 'ossrh-settings-xml') {
                     sh "mvn -DskipTests=${params.SKIP_TESTS} clean compile install"
