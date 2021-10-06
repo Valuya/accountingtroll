@@ -63,7 +63,16 @@ public class ATAccountingEntry implements Comparable<ATAccountingEntry> {
      * The document from which this entry was derived.
      */
     private ATDocument document;
+
+    /**
+     * Vat details
+     */
     private ATTax tax;
+
+    /**
+     * Currency details
+     */
+    private ATCurrencyAmount currencyAmount;
     private ATThirdParty thirdParty;
     private LocalDate documentDate;
     private LocalDate dueDate;
@@ -240,6 +249,14 @@ public class ATAccountingEntry implements Comparable<ATAccountingEntry> {
 
     public boolean isMatched() {
         return matched;
+    }
+
+    public Optional<ATCurrencyAmount> getCurrencyAmountOptional() {
+        return Optional.ofNullable(currencyAmount);
+    }
+
+    public void setCurrencyAmount(ATCurrencyAmount currencyAmount) {
+        this.currencyAmount = currencyAmount;
     }
 
     @Override
