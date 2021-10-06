@@ -1,11 +1,16 @@
 package be.valuya.accountingtroll.domain;
 
+import javax.validation.constraints.NotNull;
 import java.math.BigDecimal;
+import java.util.Comparator;
 import java.util.Objects;
 import java.util.Optional;
 
-public class ATVatCode {
+public class ATVatCode implements Comparable<ATVatCode> {
 
+    private final static Comparator<ATVatCode> COMPARATOR = Comparator.nullsFirst(Comparator.comparing(ATVatCode::getId));
+
+    @NotNull
     private String id;
     private String code;
     private BigDecimal rate;
@@ -19,6 +24,10 @@ public class ATVatCode {
 
     private boolean financial;
     private boolean intraCom;
+
+    public String getId() {
+        return id;
+    }
 
     public Optional<String> getIdOptional() {
         return Optional.ofNullable(id);
@@ -121,5 +130,10 @@ public class ATVatCode {
                 ", code='" + code + '\'' +
                 ", rate=" + rate +
                 '}';
+    }
+
+    @Override
+    public int compareTo(ATVatCode atVatCode) {
+        return COMPARATOR.compare(this, atVatCode);
     }
 }
