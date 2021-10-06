@@ -106,12 +106,12 @@ public class ATVatCode {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         ATVatCode atVatCode = (ATVatCode) o;
-        return financial == atVatCode.financial && intraCom == atVatCode.intraCom && Objects.equals(id, atVatCode.id) && Objects.equals(code, atVatCode.code) && Objects.equals(rate, atVatCode.rate) && Objects.equals(header, atVatCode.header) && Objects.equals(label, atVatCode.label) && Objects.equals(description, atVatCode.description) && liability == atVatCode.liability && deducibility == atVatCode.deducibility;
+        return Objects.equals(id, atVatCode.id);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, code, rate, header, label, description, liability, deducibility, financial, intraCom);
+        return Objects.hash(id);
     }
 
     @Override
