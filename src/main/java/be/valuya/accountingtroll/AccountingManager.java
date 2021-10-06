@@ -9,6 +9,7 @@ import be.valuya.accountingtroll.domain.ATBookYear;
 import be.valuya.accountingtroll.domain.ATDocument;
 import be.valuya.accountingtroll.domain.ATThirdParty;
 import be.valuya.accountingtroll.domain.ATThirdPartyBalance;
+import be.valuya.accountingtroll.domain.ATVatCode;
 
 import java.io.InputStream;
 import java.time.LocalDateTime;
@@ -20,6 +21,8 @@ public interface AccountingManager {
     ATThirdParty getSubjectThirdParty();
 
     Optional<LocalDateTime> getLastAccountModificationTime();
+
+    Stream<ATVatCode> streamVatCodes();
 
     Stream<ATAccount> streamAccounts();
 
