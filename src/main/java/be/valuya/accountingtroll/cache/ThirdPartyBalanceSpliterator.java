@@ -52,10 +52,10 @@ public class ThirdPartyBalanceSpliterator implements Spliterator<ATThirdPartyBal
             ATAccountingEntry nextEntry = accountingEntriesIterator.next();
             ATBookPeriod nextPeriod = nextEntry.getBookPeriod();
             BigDecimal amount = nextEntry.getAmount();
-            Optional<ATThirdParty> thirdPartyOptional = nextEntry.getThirdPartyOptional();
+            Optional<ATThirdParty> thirdPartyOptional = Optional.ofNullable(nextEntry.getThirdParty());
             LocalDate operationDate = nextEntry.getDate();
 
-            boolean relevantDocumentType = nextEntry.getAccountingEntryDocumentTypeOptional()
+            boolean relevantDocumentType = Optional.ofNullable(nextEntry.getAccountingEntryDocumentType())
                     .map(this::isDocumentTypeImputedOnThirdParty)
                     .orElse(false);
             boolean hasThirdParty = thirdPartyOptional.isPresent();
