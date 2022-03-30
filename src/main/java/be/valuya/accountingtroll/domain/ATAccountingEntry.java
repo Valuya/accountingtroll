@@ -60,6 +60,12 @@ public class ATAccountingEntry implements Comparable<ATAccountingEntry> {
     private boolean matched;
 
     /**
+     * Once matched, each entry is assigned an unique number (the same for both matched entries).
+     * This is known as 'lettrage' in the business vocabulary.
+     */
+    private String matchNumber;
+
+    /**
      * The document from which this entry was derived.
      */
     private ATDocument document;
