@@ -12,6 +12,7 @@ public class ATThirdParty implements Comparable<ATThirdParty> {
 
     @NotNull
     private String id;
+    private String accountingReference;
     private ATThirdPartyType type;
     private String fullName;
     private String address;
